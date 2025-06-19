@@ -1,0 +1,600 @@
+/**
+ * 모달 컴포넌트 스타일시트
+ * 
+ * 모든 모달 관련 스타일을 정의합니다.
+ * - 반응형 디자인
+ * - 접근성 고려
+ * - 다양한 모달 크기 및 타입
+ * - 애니메이션 효과
+ */
+
+/* ===== 모달 배경 ===== */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* ===== 모달 컨테이너 ===== */
+.modal-content {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.3),
+    0 8px 24px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ===== 모달 크기 ===== */
+.modal-small {
+  width: 100%;
+  max-width: 400px;
+}
+
+.modal-medium {
+  width: 100%;
+  max-width: 600px;
+}
+
+.modal-large {
+  width: 100%;
+  max-width: 800px;
+}
+
+.modal-fullscreen {
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  max-height: none;
+  border-radius: 0;
+}
+
+/* ===== 모달 타입별 스타일 ===== */
+.modal-default {
+  border-top: 4px solid #007bff;
+}
+
+.modal-success {
+  border-top: 4px solid #28a745;
+}
+
+.modal-error {
+  border-top: 4px solid #dc3545;
+}
+
+.modal-warning {
+  border-top: 4px solid #ffc107;
+}
+
+.modal-info {
+  border-top: 4px solid #17a2b8;
+}
+
+/* ===== 모달 헤더 ===== */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 24px 0 24px;
+  border-bottom: 1px solid #e9ecef;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: #212529;
+  line-height: 1.2;
+}
+
+.modal-close-button {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  padding: 8px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #6c757d;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+}
+
+.modal-close-button:hover {
+  background: rgba(0, 0, 0, 0.1);
+  color: #495057;
+}
+
+.modal-close-button:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+/* ===== 모달 본문 ===== */
+.modal-body {
+  padding: 0 24px;
+  flex: 1;
+  overflow-y: auto;
+  max-height: calc(90vh - 160px);
+}
+
+.modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* ===== 모달 푸터 ===== */
+.modal-footer {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding: 20px 24px 24px 24px;
+  border-top: 1px solid #e9ecef;
+  margin-top: 20px;
+}
+
+/* ===== 게임 결과 모달 스타일 ===== */
+.game-result-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 20px 0;
+}
+
+.result-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+  animation: celebration 2s ease-in-out infinite;
+}
+
+@keyframes celebration {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.1) rotate(-5deg); }
+  75% { transform: scale(1.1) rotate(5deg); }
+}
+
+.result-details {
+  margin-bottom: 30px;
+}
+
+.result-message {
+  font-size: 20px;
+  font-weight: 600;
+  color: #212529;
+  margin-bottom: 12px;
+}
+
+.result-score {
+  font-size: 18px;
+  color: #28a745;
+  font-weight: 500;
+}
+
+.result-encouragement {
+  font-size: 16px;
+  color: #6c757d;
+  margin-top: 8px;
+}
+
+.result-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 280px;
+}
+
+.new-game-button {
+  order: 1;
+}
+
+.restart-button {
+  order: 2;
+}
+
+.close-button {
+  order: 3;
+}
+
+/* ===== 설정 모달 스타일 ===== */
+.settings-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.setting-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.setting-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #212529;
+  cursor: pointer;
+  padding: 12px 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.setting-label:last-child {
+  border-bottom: none;
+}
+
+.setting-label input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #007bff;
+}
+
+.setting-label select {
+  margin-left: auto;
+  padding: 8px 12px;
+  border: 2px solid #dee2e6;
+  border-radius: 8px;
+  background: white;
+  font-size: 14px;
+  cursor: pointer;
+  min-width: 120px;
+}
+
+.setting-label select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+/* ===== 도움말 모달 스타일 ===== */
+.help-content {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.help-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.help-section h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #212529;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.help-section p {
+  margin: 0;
+  font-size: 16px;
+  color: #495057;
+  line-height: 1.5;
+}
+
+.help-section ol {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.help-section li {
+  font-size: 16px;
+  color: #495057;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
+/* ===== 힌트 설명 ===== */
+.hint-explanations {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.hint-item {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border-left: 4px solid #007bff;
+}
+
+.hint-emoji {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.hint-item div {
+  flex: 1;
+}
+
+.hint-item strong {
+  display: block;
+  font-size: 18px;
+  font-weight: 600;
+  color: #212529;
+  margin-bottom: 4px;
+}
+
+.hint-item p {
+  margin: 0;
+  font-size: 14px;
+  color: #6c757d;
+  line-height: 1.4;
+}
+
+/* ===== 키보드 단축키 ===== */
+.keyboard-shortcuts {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.shortcut-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+}
+
+.shortcut-item kbd {
+  background: #212529;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 12px;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.shortcut-item span {
+  font-size: 14px;
+  color: #495057;
+  font-weight: 500;
+}
+
+/* ===== 반응형 디자인 ===== */
+@media (max-width: 768px) {
+  .modal-backdrop {
+    padding: 16px;
+  }
+  
+  .modal-content {
+    border-radius: 12px;
+    max-height: 95vh;
+  }
+  
+  .modal-small,
+  .modal-medium,
+  .modal-large {
+    max-width: 100%;
+  }
+  
+  .modal-header {
+    padding: 20px 20px 0 20px;
+  }
+  
+  .modal-title {
+    font-size: 20px;
+    padding-right: 40px;
+  }
+  
+  .modal-body {
+    padding: 0 20px;
+    max-height: calc(95vh - 140px);
+  }
+  
+  .modal-footer {
+    padding: 16px 20px 20px 20px;
+    flex-direction: column;
+  }
+  
+  .result-icon {
+    font-size: 48px;
+  }
+  
+  .result-message {
+    font-size: 18px;
+  }
+  
+  .result-score {
+    font-size: 16px;
+  }
+  
+  .hint-item {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+  
+  .hint-emoji {
+    align-self: center;
+  }
+  
+  .shortcut-item {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-backdrop {
+    padding: 12px;
+  }
+  
+  .modal-header {
+    padding: 16px 16px 0 16px;
+  }
+  
+  .modal-title {
+    font-size: 18px;
+  }
+  
+  .modal-body {
+    padding: 0 16px;
+  }
+  
+  .modal-footer {
+    padding: 12px 16px 16px 16px;
+  }
+  
+  .modal-close-button {
+    right: 12px;
+    top: 12px;
+    width: 36px;
+    height: 36px;
+    font-size: 20px;
+  }
+  
+  .result-actions {
+    max-width: 100%;
+  }
+}
+
+/* ===== 접근성 ===== */
+@media (prefers-reduced-motion: reduce) {
+  .result-icon {
+    animation: none;
+  }
+  
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+.modal-content:focus {
+  outline: none;
+}
+
+/* ===== 다크모드 지원 ===== */
+@media (prefers-color-scheme: dark) {
+  .modal-content {
+    background: #2d3748;
+    border-color: #4a5568;
+  }
+  
+  .modal-header {
+    border-bottom-color: #4a5568;
+  }
+  
+  .modal-footer {
+    border-top-color: #4a5568;
+  }
+  
+  .modal-title {
+    color: #e2e8f0;
+  }
+  
+  .modal-close-button {
+    color: #a0aec0;
+  }
+  
+  .modal-close-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #e2e8f0;
+  }
+  
+  .result-message {
+    color: #e2e8f0;
+  }
+  
+  .result-encouragement {
+    color: #a0aec0;
+  }
+  
+  .setting-label {
+    color: #e2e8f0;
+    border-bottom-color: #4a5568;
+  }
+  
+  .setting-label select {
+    background: #2d3748;
+    border-color: #4a5568;
+    color: #e2e8f0;
+  }
+  
+  .help-section h3 {
+    color: #e2e8f0;
+  }
+  
+  .help-section p,
+  .help-section li {
+    color: #cbd5e0;
+  }
+  
+  .hint-item {
+    background: #1a202c;
+  }
+  
+  .hint-item strong {
+    color: #e2e8f0;
+  }
+  
+  .hint-item p {
+    color: #a0aec0;
+  }
+  
+  .shortcut-item {
+    background: #1a202c;
+    border-color: #4a5568;
+  }
+  
+  .shortcut-item span {
+    color: #cbd5e0;
+  }
+  
+  .shortcut-item kbd {
+    background: #e2e8f0;
+    color: #1a202c;
+  }
+}

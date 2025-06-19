@@ -1,0 +1,460 @@
+/**
+ * 글로벌 스타일시트
+ * 
+ * 한글 단어 맞추기 게임의 전역 스타일을 정의합니다.
+ * - CSS 리셋 및 기본 설정
+ * - 웹폰트 및 타이포그래피
+ * - 접근성 및 유틸리티 클래스
+ * - 반응형 기본 설정
+ */
+
+/* ===== CSS 리셋 ===== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ===== 루트 설정 ===== */
+:root {
+  /* 웹폰트 스택 */
+  font-family: 
+    -apple-system, 
+    BlinkMacSystemFont, 
+    'Segoe UI', 
+    'Roboto', 
+    'Oxygen',
+    'Ubuntu', 
+    'Cantarell', 
+    'Fira Sans', 
+    'Droid Sans', 
+    'Helvetica Neue',
+    sans-serif;
+  
+  /* 기본 폰트 설정 */
+  line-height: 1.6;
+  font-weight: 400;
+  
+  /* 렌더링 최적화 */
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  
+  /* 색상 스킴 */
+  color-scheme: light dark;
+  
+  /* 스크롤 동작 */
+  scroll-behavior: smooth;
+  
+  /* 터치 동작 */
+  touch-action: manipulation;
+}
+
+/* ===== 다크모드 기본 설정 ===== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+  }
+}
+
+/* ===== HTML & Body ===== */
+html {
+  height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  min-width: 320px;
+  background-color: #ffffff;
+  color: #212529;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ===== 기본 요소 스타일링 ===== */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  font-weight: 700;
+  line-height: 1.2;
+  color: inherit;
+}
+
+p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+a {
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+a:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+a:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+/* ===== 버튼 리셋 ===== */
+button {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+/* ===== 폼 요소 리셋 ===== */
+input,
+textarea,
+select {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+/* ===== 리스트 리셋 ===== */
+ul, ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ===== 이미지 및 미디어 ===== */
+img,
+video,
+canvas,
+svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ===== 루트 컨테이너 ===== */
+#root {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+  isolation: isolate;
+}
+
+/* ===== 접근성 유틸리티 ===== */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: #007bff;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  text-decoration: none;
+  z-index: 9999;
+  font-weight: 600;
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+/* ===== 포커스 관리 ===== */
+.focus-trap {
+  position: relative;
+}
+
+.focus-visible:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+/* ===== 애니메이션 설정 ===== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ===== 고대비 모드 ===== */
+@media (prefers-contrast: high) {
+  :root {
+    --border-width: 3px;
+  }
+  
+  a {
+    text-decoration: underline;
+  }
+  
+  button:focus,
+  input:focus,
+  textarea:focus,
+  select:focus {
+    outline-width: 3px;
+  }
+}
+
+/* ===== 다크모드 지원 ===== */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #1a202c;
+    color: #e2e8f0;
+  }
+  
+  a {
+    color: #63b3ed;
+  }
+  
+  a:hover {
+    color: #90cdf4;
+  }
+}
+
+/* ===== 프린트 스타일 ===== */
+@media print {
+  * {
+    background: transparent !important;
+    color: black !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  
+  body {
+    font-size: 12pt;
+    line-height: 1.4;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+  }
+  
+  p {
+    orphans: 3;
+    widows: 3;
+  }
+  
+  a {
+    text-decoration: underline;
+  }
+  
+  a[href^="http"]:after {
+    content: " (" attr(href) ")";
+  }
+}
+
+/* ===== 모바일 최적화 ===== */
+@media (max-width: 768px) {
+  body {
+    font-size: 16px; /* iOS 줌 방지 */
+  }
+}
+
+/* ===== 터치 디바이스 최적화 ===== */
+@media (hover: none) and (pointer: coarse) {
+  button,
+  a,
+  input,
+  textarea,
+  select {
+    min-height: 44px; /* 터치 타겟 최소 크기 */
+    min-width: 44px;
+  }
+}
+
+/* ===== 스크롤바 스타일링 ===== */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+@media (prefers-color-scheme: dark) {
+  ::-webkit-scrollbar-track {
+    background: #2d3748;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #4a5568;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #718096;
+  }
+}
+
+/* ===== 선택 영역 스타일링 ===== */
+::selection {
+  background: #007bff;
+  color: white;
+}
+
+::-moz-selection {
+  background: #007bff;
+  color: white;
+}
+
+/* ===== 유틸리티 클래스 ===== */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.clearfix::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* ===== 텍스트 유틸리티 ===== */
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.text-justify { text-align: justify; }
+
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text-break {
+  word-wrap: break-word !important;
+  word-break: break-word !important;
+}
+
+/* ===== 디스플레이 유틸리티 ===== */
+.d-none { display: none !important; }
+.d-inline { display: inline !important; }
+.d-inline-block { display: inline-block !important; }
+.d-block { display: block !important; }
+.d-flex { display: flex !important; }
+.d-inline-flex { display: inline-flex !important; }
+
+/* ===== 플렉스 유틸리티 ===== */
+.flex-row { flex-direction: row !important; }
+.flex-column { flex-direction: column !important; }
+.flex-wrap { flex-wrap: wrap !important; }
+.flex-nowrap { flex-wrap: nowrap !important; }
+
+.justify-content-start { justify-content: flex-start !important; }
+.justify-content-end { justify-content: flex-end !important; }
+.justify-content-center { justify-content: center !important; }
+.justify-content-between { justify-content: space-between !important; }
+.justify-content-around { justify-content: space-around !important; }
+
+.align-items-start { align-items: flex-start !important; }
+.align-items-end { align-items: flex-end !important; }
+.align-items-center { align-items: center !important; }
+.align-items-stretch { align-items: stretch !important; }
+
+/* ===== 위치 유틸리티 ===== */
+.position-static { position: static !important; }
+.position-relative { position: relative !important; }
+.position-absolute { position: absolute !important; }
+.position-fixed { position: fixed !important; }
+.position-sticky { position: sticky !important; }
+
+/* ===== 마진/패딩 유틸리티 ===== */
+.m-0 { margin: 0 !important; }
+.mt-0 { margin-top: 0 !important; }
+.mb-0 { margin-bottom: 0 !important; }
+.ml-0 { margin-left: 0 !important; }
+.mr-0 { margin-right: 0 !important; }
+
+.p-0 { padding: 0 !important; }
+.pt-0 { padding-top: 0 !important; }
+.pb-0 { padding-bottom: 0 !important; }
+.pl-0 { padding-left: 0 !important; }
+.pr-0 { padding-right: 0 !important; }
+
+/* ===== 성능 최적화 ===== */
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+.will-change-transform {
+  will-change: transform;
+}
+
+.will-change-opacity {
+  will-change: opacity;
+}
+
+/* ===== 개발 도구 ===== */
+.debug-outline * {
+  outline: 1px solid red !important;
+}
+
+.debug-baseline {
+  background-image: linear-gradient(to bottom, transparent 23px, red 23px, red 24px, transparent 24px);
+  background-size: 100% 24px;
+}

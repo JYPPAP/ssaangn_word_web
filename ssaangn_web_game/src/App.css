@@ -1,0 +1,636 @@
+/* 메인 앱 스타일 - JavaScript modules 기반 */
+
+/* 전역 변수 */
+:root {
+  /* 색상 팔레트 */
+  --primary-color: #3b82f6;
+  --primary-dark: #2563eb;
+  --secondary-color: #6b7280;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --error-color: #ef4444;
+  
+  /* 배경색 */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+  
+  /* 텍스트 색상 */
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --text-tertiary: #9ca3af;
+  
+  /* 경계선 */
+  --border-color: #e5e7eb;
+  --border-color-light: #f3f4f6;
+  
+  /* 그림자 */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  
+  /* 간격 */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  
+  /* 폰트 */
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 24px;
+  --font-size-3xl: 32px;
+  
+  /* 전환 효과 */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+  
+  /* Z-index */
+  --z-dropdown: 1000;
+  --z-modal: 1050;
+  --z-toast: 1100;
+  --z-tooltip: 1200;
+}
+
+/* ===== 다크모드 변수 ===== */
+.dark-mode {
+  --bg-primary: #1a202c;
+  --bg-secondary: #2d3748;
+  --bg-tertiary: #4a5568;
+  
+  --text-primary: #e2e8f0;
+  --text-secondary: #a0aec0;
+  --text-muted: #718096;
+  
+  --border-color: #4a5568;
+  
+  --primary-light: #2b77e4;
+  --secondary-light: #4a5568;
+}
+
+/* ===== 메인 앱 컨테이너 ===== */
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.app.compact-mode {
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 20px;
+}
+
+.app.game-ended {
+  background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+}
+
+/* ===== 앱 헤더 ===== */
+.app-header {
+  background: var(--bg-primary);
+  border-bottom: 2px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-lg) var(--spacing-md);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+}
+
+.title-section {
+  flex: 1;
+  min-width: 0;
+}
+
+.app-title {
+  margin: 0 0 var(--spacing-sm) 0;
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  line-height: 1.2;
+}
+
+.title-icon {
+  font-size: var(--font-size-3xl);
+  animation: pulse-icon 2s ease-in-out infinite;
+}
+
+@keyframes pulse-icon {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.game-status {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.status-message {
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.error-indicator {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--danger-color);
+  color: white;
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-sm);
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.error-icon {
+  font-size: var(--font-size-md);
+}
+
+.error-text {
+  font-weight: 600;
+}
+
+/* ===== 헤더 액션 ===== */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
+.stats-section {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--bg-secondary);
+  border-radius: var(--border-radius);
+  border: 2px solid var(--border-color);
+  min-width: 60px;
+}
+
+.stat-value {
+  font-size: var(--font-size-lg);
+  font-weight: 800;
+  color: var(--primary-color);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ===== 메인 게임 영역 ===== */
+.app-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg) var(--spacing-md);
+  position: relative;
+}
+
+.game-container {
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  align-items: center;
+}
+
+/* ===== 앱 푸터 ===== */
+.app-footer {
+  background: var(--bg-primary);
+  border-top: 2px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  margin-top: auto;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-md);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+
+.game-progress {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex: 1;
+  max-width: 300px;
+}
+
+.progress-label {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 8px;
+  background: var(--bg-tertiary);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
+  border-radius: 4px;
+  transition: width var(--transition-normal);
+  position: relative;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: progress-shine 2s ease-in-out infinite;
+}
+
+@keyframes progress-shine {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.progress-text {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.footer-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.footer-text {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* ===== 로딩 오버레이 ===== */
+.app-loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-2xl);
+  background: var(--bg-primary);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-xl);
+  border: 2px solid var(--border-color);
+}
+
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--border-color);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+/* ===== 환영 토스트 ===== */
+.welcome-toast {
+  position: fixed;
+  bottom: var(--spacing-xl);
+  right: var(--spacing-xl);
+  background: var(--primary-color);
+  color: white;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  z-index: var(--z-toast);
+  max-width: 400px;
+}
+
+.toast-content {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+}
+
+.toast-icon {
+  font-size: var(--font-size-xl);
+  flex-shrink: 0;
+}
+
+.toast-text {
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  flex: 1;
+}
+
+/* ===== 반응형 디자인 ===== */
+@media (max-width: 1024px) {
+  .header-content {
+    padding: var(--spacing-md);
+  }
+  
+  .stats-section {
+    gap: var(--spacing-sm);
+  }
+  
+  .stat-item {
+    min-width: 50px;
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+  
+  .stat-value {
+    font-size: var(--font-size-md);
+  }
+}
+
+@media (max-width: 768px) {
+  .app-title {
+    font-size: var(--font-size-xl);
+  }
+  
+  .title-icon {
+    font-size: var(--font-size-2xl);
+  }
+  
+  .header-content {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    align-items: stretch;
+  }
+  
+  .header-actions {
+    justify-content: space-between;
+  }
+  
+  .stats-section {
+    justify-content: center;
+  }
+  
+  .app-main {
+    padding: var(--spacing-md);
+  }
+  
+  .game-container {
+    gap: var(--spacing-lg);
+  }
+  
+  .footer-content {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    text-align: center;
+  }
+  
+  .game-progress {
+    max-width: 100%;
+    justify-content: center;
+  }
+  
+  .welcome-toast {
+    bottom: var(--spacing-md);
+    right: var(--spacing-md);
+    left: var(--spacing-md);
+    max-width: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-title {
+    font-size: var(--font-size-lg);
+  }
+  
+  .title-icon {
+    font-size: var(--font-size-xl);
+  }
+  
+  .header-content {
+    padding: var(--spacing-sm);
+  }
+  
+  .header-actions {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    align-items: stretch;
+  }
+  
+  .stats-section {
+    order: 2;
+  }
+  
+  .stat-item {
+    flex: 1;
+  }
+  
+  .app-main {
+    padding: var(--spacing-sm);
+  }
+  
+  .footer-content {
+    padding: var(--spacing-sm);
+  }
+  
+  .toast-content {
+    padding: var(--spacing-md);
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+/* ===== 컴팩트 모드 ===== */
+.compact-mode .header-content {
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.compact-mode .app-title {
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--spacing-xs);
+}
+
+.compact-mode .title-icon {
+  font-size: var(--font-size-xl);
+}
+
+.compact-mode .app-main {
+  padding: var(--spacing-md);
+}
+
+.compact-mode .game-container {
+  gap: var(--spacing-lg);
+}
+
+.compact-mode .footer-content {
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+/* ===== 접근성 ===== */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .progress-fill::after {
+    display: none;
+  }
+}
+
+@media (prefers-contrast: high) {
+  .app {
+    --border-color: #000000;
+  }
+  
+  .stat-item,
+  .app-header,
+  .app-footer {
+    border-width: 3px;
+  }
+}
+
+.app:focus-within {
+  outline: none;
+}
+
+/* ===== 다크모드 특별 스타일 ===== */
+.dark-mode .app-header {
+  background: var(--bg-secondary);
+  border-bottom-color: var(--border-color);
+}
+
+.dark-mode .app-footer {
+  background: var(--bg-secondary);
+  border-top-color: var(--border-color);
+}
+
+.dark-mode .loading-content {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+.dark-mode .welcome-toast {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+/* ===== 프린트 스타일 ===== */
+@media print {
+  .app {
+    background: white !important;
+    color: black !important;
+  }
+  
+  .app-header,
+  .app-footer,
+  .welcome-toast,
+  .app-loading-overlay {
+    display: none !important;
+  }
+  
+  .app-main {
+    padding: 0 !important;
+  }
+}
+
+/* ===== 고해상도 디스플레이 최적화 ===== */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .app {
+    -webkit-font-smoothing: subpixel-antialiased;
+  }
+}
+
+/* ===== 성능 최적화 ===== */
+.app-header,
+.app-footer,
+.app-main {
+  contain: layout style paint;
+}
+
+.loading-spinner,
+.progress-fill {
+  will-change: transform;
+}

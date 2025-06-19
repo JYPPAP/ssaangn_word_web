@@ -1,0 +1,413 @@
+/* 모듈 게임 보드 스타일 */
+
+.module-game-board {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.module-game-board.compact {
+  gap: 1rem;
+  padding: 0.75rem;
+}
+
+/* 보드 헤더 */
+.board-header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.board-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 0 0 0.5rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.title-icon {
+  font-size: 1.75rem;
+}
+
+.board-info {
+  color: #718096;
+  font-size: 0.875rem;
+}
+
+/* 보드 그리드 */
+.board-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.board-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.board-row.current-row {
+  background: rgba(59, 130, 246, 0.05);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.row-number {
+  font-weight: 600;
+  color: #718096;
+  min-width: 24px;
+  text-align: center;
+  font-size: 0.875rem;
+}
+
+.row-cells {
+  display: flex;
+  gap: 0.5rem;
+  flex: 1;
+  justify-content: center;
+}
+
+.row-status {
+  min-width: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 게임 셀 */
+.game-cell {
+  width: 60px;
+  height: 60px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  background: white;
+  transition: all 0.3s ease;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.game-cell.compact {
+  width: 50px;
+  height: 50px;
+  font-size: 1.25rem;
+}
+
+.game-cell.animated {
+  animation-duration: 0.3s;
+  animation-timing-function: ease-in-out;
+}
+
+/* 셀 상태별 스타일 */
+.game-cell.empty {
+  border-color: #e2e8f0;
+  background: #f8fafc;
+}
+
+.game-cell.current {
+  border-color: #3b82f6;
+  background: white;
+}
+
+.game-cell.active {
+  border-color: #1d4ed8;
+  background: rgba(59, 130, 246, 0.1);
+  animation: pulse 1s infinite;
+}
+
+.game-cell.filled {
+  border-color: #6b7280;
+  background: white;
+  color: #1f2937;
+}
+
+.game-cell.submitted {
+  border-width: 1px;
+  color: white;
+  font-weight: 600;
+}
+
+/* 힌트별 색상 */
+.game-cell.correct {
+  background: rgb(255, 130, 45);
+  border-color: rgb(230, 117, 32);
+}
+
+.game-cell.similar {
+  background: rgb(248, 86, 155);
+  border-color: rgb(225, 73, 142);
+}
+
+.game-cell.many {
+  background: rgb(229, 205, 179);
+  border-color: rgb(206, 182, 156);
+  color: #1f2937;
+}
+
+.game-cell.exists {
+  background: rgb(140, 66, 179);
+  border-color: rgb(127, 53, 166);
+}
+
+.game-cell.opposite {
+  background: rgb(248, 214, 87);
+  border-color: rgb(225, 191, 64);
+  color: #1f2937;
+}
+
+.game-cell.none {
+  background: #6b7280;
+  border-color: #4b5563;
+  color: white;
+}
+
+/* 셀 내용 */
+.cell-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.cell-letter {
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+/* 힌트 표시 */
+.cell-hint {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.cell-hint .hint-emoji {
+  font-size: 0.7rem;
+}
+
+/* 행 상태 */
+.row-result {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.result-correct {
+  color: #10b981;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.result-hints {
+  display: flex;
+  gap: 0.125rem;
+}
+
+.mini-hint {
+  font-size: 0.75rem;
+}
+
+.row-current {
+  color: #3b82f6;
+  font-weight: 600;
+}
+
+.current-indicator {
+  animation: blink 1s infinite;
+}
+
+/* 보드 푸터 */
+.board-footer {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.hint-legend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.legend-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #4b5563;
+  margin-bottom: 0.75rem;
+}
+
+.legend-items {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.legend-emoji {
+  font-size: 0.875rem;
+}
+
+/* 애니메이션 */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.game-cell.submitted.animated {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.board-row.current-row.animated {
+  animation: slideIn 0.3s ease-out;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 640px) {
+  .module-game-board {
+    padding: 0.75rem;
+    gap: 1rem;
+  }
+  
+  .board-row {
+    gap: 0.5rem;
+    padding: 0.25rem;
+  }
+  
+  .game-cell {
+    width: 50px;
+    height: 50px;
+    font-size: 1.25rem;
+  }
+  
+  .row-number {
+    min-width: 20px;
+    font-size: 0.75rem;
+  }
+  
+  .row-status {
+    min-width: 60px;
+  }
+  
+  .legend-items {
+    gap: 0.5rem;
+  }
+  
+  .legend-item {
+    font-size: 0.6875rem;
+  }
+}
+
+/* 다크 모드 */
+.dark-mode .module-game-board {
+  background: #1a202c;
+  color: white;
+}
+
+.dark-mode .board-title {
+  color: #f7fafc;
+}
+
+.dark-mode .board-info {
+  color: #a0aec0;
+}
+
+.dark-mode .board-row.current-row {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.dark-mode .game-cell.empty {
+  background: #2d3748;
+  border-color: #4a5568;
+}
+
+.dark-mode .game-cell.current {
+  background: #2d3748;
+  border-color: #3b82f6;
+}
+
+.dark-mode .game-cell.filled {
+  background: #2d3748;
+  color: #f7fafc;
+  border-color: #a0aec0;
+}
+
+.dark-mode .board-footer {
+  border-top-color: #4a5568;
+}
+
+.dark-mode .legend-title {
+  color: #e2e8f0;
+}
+
+.dark-mode .legend-item {
+  color: #a0aec0;
+}

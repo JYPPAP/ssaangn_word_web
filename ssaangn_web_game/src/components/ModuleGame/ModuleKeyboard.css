@@ -1,0 +1,526 @@
+/* 모듈 키보드 스타일 */
+
+.module-keyboard {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.module-keyboard.compact {
+  padding: 1rem;
+  gap: 0.75rem;
+}
+
+.module-keyboard.disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* 키보드 헤더 */
+.keyboard-header {
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.keyboard-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0 0 0.25rem 0;
+}
+
+.keyboard-info {
+  color: #718096;
+  font-size: 0.875rem;
+}
+
+/* 키보드 레이아웃 */
+.keyboard-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* 컴팩트 키보드 레이아웃 */
+.keyboard-layout.compact-layout {
+  gap: 0.5rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.compact-key-row {
+  display: flex;
+  gap: 0.25rem;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.compact-key-row .keyboard-button {
+  min-width: 36px;
+  height: 36px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background: white;
+  color: #2d3748;
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: 'Noto Sans KR', sans-serif;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  position: relative;
+}
+
+.compact-key-row .keyboard-button:hover:not(:disabled) {
+  background: #f7fafc;
+  border-color: #cbd5e0;
+  transform: translateY(-1px);
+}
+
+.compact-key-row .keyboard-button:active:not(:disabled) {
+  transform: translateY(0);
+  background: #edf2f7;
+}
+
+.compact-key-row .keyboard-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 컴팩트 특수 키 (삭제, 입력, 힌트) */
+.compact-key-row .delete-button,
+.compact-key-row .submit-button,
+.compact-key-row .hint-button {
+  min-width: 60px;
+  background: #3b82f6;
+  color: white;
+  border-color: #2563eb;
+  flex-direction: column;
+  gap: 0.125rem;
+  padding: 0.25rem;
+  margin-left: 0.375rem;
+}
+
+.compact-key-row .delete-button:hover:not(:disabled),
+.compact-key-row .submit-button:hover:not(:disabled),
+.compact-key-row .hint-button:hover:not(:disabled) {
+  background: #2563eb;
+  border-color: #1d4ed8;
+}
+
+.compact-key-row .delete-button .key-icon,
+.compact-key-row .submit-button .key-icon,
+.compact-key-row .hint-button .key-icon {
+  font-size: 0.875rem;
+}
+
+.compact-key-row .delete-button .key-text,
+.compact-key-row .submit-button .key-text,
+.compact-key-row .hint-button .key-text {
+  font-size: 0.625rem;
+  font-weight: 500;
+}
+
+/* 힌트 버튼 특별 스타일 */
+.compact-key-row .hint-button {
+  background: #f97316;
+  border-color: #ea580c;
+}
+
+.compact-key-row .hint-button:hover:not(:disabled) {
+  background: #ea580c;
+  border-color: #c2410c;
+}
+
+/* 사용된 힌트 버튼 */
+.compact-key-row .hint-button.used {
+  background: #6b7280;
+  border-color: #4b5563;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.compact-key-row .hint-button.used:hover {
+  background: #6b7280;
+  border-color: #4b5563;
+  transform: none;
+}
+
+/* 키 섹션 */
+.key-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.key-section.complex {
+  gap: 0.75rem;
+}
+
+.section-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #4a5568;
+  text-align: center;
+  margin-bottom: 0.25rem;
+}
+
+.key-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.key-row {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* 키보드 키 */
+.keyboard-key {
+  min-width: 48px;
+  height: 48px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  background: white;
+  color: #2d3748;
+  font-size: 1.125rem;
+  font-weight: 600;
+  font-family: 'Noto Sans KR', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.keyboard-key.compact {
+  min-width: 40px;
+  height: 40px;
+  font-size: 1rem;
+}
+
+.keyboard-key.animated {
+  transition: all 0.2s ease;
+}
+
+/* 키 상태 */
+.keyboard-key:hover:not(:disabled) {
+  background: #f7fafc;
+  border-color: #cbd5e0;
+  transform: translateY(-1px);
+}
+
+.keyboard-key:active:not(:disabled) {
+  transform: translateY(0);
+  background: #edf2f7;
+}
+
+.keyboard-key:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.keyboard-key:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 특수 키 */
+.keyboard-key.special {
+  min-width: 80px;
+  background: #3b82f6;
+  color: white;
+  border-color: #2563eb;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.5rem;
+}
+
+.keyboard-key.special:hover:not(:disabled) {
+  background: #2563eb;
+  border-color: #1d4ed8;
+}
+
+.keyboard-key.special:active:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.keyboard-key.special .key-icon {
+  font-size: 1.25rem;
+}
+
+.keyboard-key.special .key-text {
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.keyboard-key.special.compact {
+  min-width: 64px;
+  padding: 0.25rem;
+}
+
+.keyboard-key.special.compact .key-icon {
+  font-size: 1rem;
+}
+
+.keyboard-key.special.compact .key-text {
+  font-size: 0.6875rem;
+}
+
+/* 제어 키 섹션 */
+.key-section.controls {
+  margin-top: 0.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.key-section.controls .key-row {
+  gap: 1rem;
+}
+
+/* 키보드 푸터 */
+.keyboard-footer {
+  margin-top: 0.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.keyboard-tips {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.tip-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.tip-icon {
+  font-size: 0.875rem;
+}
+
+/* 키 효과 애니메이션 */
+.keyboard-key.animated:active:not(:disabled) {
+  animation: keyPress 0.1s ease-out;
+}
+
+@keyframes keyPress {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* 파동 효과 */
+.keyboard-key::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(59, 130, 246, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease;
+}
+
+.keyboard-key:active:not(:disabled)::before {
+  width: 100px;
+  height: 100px;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .module-keyboard {
+    padding: 1rem;
+    gap: 1rem;
+  }
+  
+  .keyboard-layout {
+    gap: 1rem;
+  }
+  
+  .key-section {
+    gap: 0.75rem;
+  }
+  
+  .keyboard-key {
+    min-width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+  
+  .keyboard-key.special {
+    min-width: 60px;
+    padding: 0.25rem;
+  }
+  
+  .keyboard-key.special .key-icon {
+    font-size: 1rem;
+  }
+  
+  .keyboard-key.special .key-text {
+    font-size: 0.6875rem;
+  }
+  
+  .key-row {
+    gap: 0.375rem;
+  }
+  
+  .key-section.controls .key-row {
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .module-keyboard {
+    padding: 0.75rem;
+  }
+  
+  .keyboard-key {
+    min-width: 36px;
+    height: 36px;
+    font-size: 0.875rem;
+  }
+  
+  .keyboard-key.special {
+    min-width: 50px;
+  }
+  
+  .key-row {
+    gap: 0.25rem;
+  }
+  
+  .keyboard-tips {
+    gap: 0.25rem;
+  }
+  
+  .tip-item {
+    font-size: 0.6875rem;
+  }
+}
+
+/* 다크 모드 */
+.dark-mode .module-keyboard {
+  background: #1a202c;
+  color: white;
+}
+
+.dark-mode .keyboard-title {
+  color: #f7fafc;
+}
+
+.dark-mode .keyboard-info {
+  color: #a0aec0;
+}
+
+.dark-mode .section-title {
+  color: #e2e8f0;
+}
+
+.dark-mode .keyboard-key {
+  background: #2d3748;
+  color: #f7fafc;
+  border-color: #4a5568;
+}
+
+.dark-mode .keyboard-key:hover:not(:disabled) {
+  background: #4a5568;
+  border-color: #718096;
+}
+
+.dark-mode .keyboard-key:active:not(:disabled) {
+  background: #1a202c;
+}
+
+.dark-mode .keyboard-key:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.dark-mode .key-section.controls {
+  border-top-color: #4a5568;
+}
+
+.dark-mode .keyboard-footer {
+  border-top-color: #4a5568;
+}
+
+.dark-mode .tip-item {
+  color: #a0aec0;
+}
+
+/* 접근성 */
+.keyboard-key:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* 키보드 단축키 표시 */
+.keyboard-key[data-shortcut]::after {
+  content: attr(data-shortcut);
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  font-size: 0.5rem;
+  opacity: 0.6;
+  font-weight: 400;
+}
+
+/* 고대비 모드 */
+@media (prefers-contrast: high) {
+  .keyboard-key {
+    border-width: 2px;
+    border-color: #000;
+  }
+  
+  .keyboard-key.special {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+  }
+}
+
+/* 움직임 감소 모드 */
+@media (prefers-reduced-motion: reduce) {
+  .keyboard-key {
+    transition: none;
+  }
+  
+  .keyboard-key.animated:active:not(:disabled) {
+    animation: none;
+  }
+  
+  .keyboard-key::before {
+    transition: none;
+  }
+}
