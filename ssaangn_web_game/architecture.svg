@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1400" height="920" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+
+    <linearGradient id="reactGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#61dafb;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#21618c;stop-opacity:0.9" />
+    </linearGradient>
+
+    <linearGradient id="storeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#9b59b6;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#6c3483;stop-opacity:0.9" />
+    </linearGradient>
+
+    <linearGradient id="utilsGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f39c12;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#d35400;stop-opacity:0.9" />
+    </linearGradient>
+
+    <linearGradient id="dataGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#27ae60;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#196f3d;stop-opacity:0.9" />
+    </linearGradient>
+
+    <!-- Shadows -->
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+      <feOffset dx="2" dy="4" result="offset"/>
+      <feFlood flood-color="#000000" flood-opacity="0.15"/>
+      <feComposite in2="offset" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Arrow markers -->
+    <marker id="arrowBlue" markerWidth="12" markerHeight="8" refX="12" refY="4" orient="auto" markerUnits="strokeWidth">
+      <polygon points="0,0 12,4 0,8" fill="#3498db" />
+    </marker>
+
+    <marker id="arrowRed" markerWidth="12" markerHeight="8" refX="12" refY="4" orient="auto" markerUnits="strokeWidth">
+      <polygon points="0,0 12,4 0,8" fill="#e74c3c" />
+    </marker>
+
+    <!-- Styles -->
+    <style>
+      .title { font: bold 28px 'Segoe UI', Arial, sans-serif; text-anchor: middle; fill: white; }
+      .subtitle { font: 18px 'Segoe UI', Arial, sans-serif; text-anchor: middle; fill: white; opacity: 0.9; }
+      .layer-title { font: bold 16px 'Segoe UI', Arial, sans-serif; text-anchor: start; fill: #2c3e50; }
+      .component-title { font: bold 11px 'Segoe UI', Arial, sans-serif; text-anchor: middle; fill: white; }
+      .component-desc { font: 9px 'Segoe UI', Arial, sans-serif; text-anchor: middle; fill: white; opacity: 0.85; }
+      .flow-label { font: 10px 'Segoe UI', Arial, sans-serif; text-anchor: middle; fill: #2c3e50; background: white; }
+      .legend-text { font: 11px 'Segoe UI', Arial, sans-serif; text-anchor: start; fill: #2c3e50; }
+      .legend-title { font: bold 14px 'Segoe UI', Arial, sans-serif; text-anchor: start; fill: #2c3e50; }
+
+      .layer-bg { fill: #f8f9fa; stroke: #dee2e6; stroke-width: 1; rx: 12; filter: url(#shadow); }
+      .react-card { fill: url(#reactGrad); stroke: #21618c; stroke-width: 1.5; rx: 8; filter: url(#shadow); }
+      .store-card { fill: url(#storeGrad); stroke: #6c3483; stroke-width: 1.5; rx: 8; filter: url(#shadow); }
+      .utils-card { fill: url(#utilsGrad); stroke: #d35400; stroke-width: 1.5; rx: 8; filter: url(#shadow); }
+      .data-card { fill: url(#dataGrad); stroke: #196f3d; stroke-width: 1.5; rx: 8; filter: url(#shadow); }
+      .types-card { fill: #95a5a6; stroke: #7f8c8d; stroke-width: 1.5; rx: 8; filter: url(#shadow); }
+
+      .flow-sync { stroke: #3498db; stroke-width: 2.5; fill: none; marker-end: url(#arrowBlue); }
+      .flow-async { stroke: #e74c3c; stroke-width: 2.5; fill: none; marker-end: url(#arrowRed); stroke-dasharray: 8,4; }
+
+      .tech-badge { fill: #ecf0f1; stroke: #bdc3c7; stroke-width: 1; rx: 15; }
+      .tech-text { font: 10px 'Segoe UI', Arial, sans-serif; text-anchor: middle; fill: #2c3e50; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1400" height="900" fill="#ffffff"/>
+
+  <!-- Header -->
+  <rect x="0" y="0" width="1400" height="80" fill="url(#headerGrad)"/>
+  <text x="700" y="35" class="title">🎮 쌍근 한글 단어 맞추기 게임</text>
+  <text x="700" y="60" class="subtitle">Modern React Architecture with TypeScript &amp; Zustand</text>
+
+  <!-- Presentation Layer -->
+  <rect x="40" y="100" width="1320" height="140" class="layer-bg"/>
+  <text x="60" y="125" class="layer-title">🎨 Presentation Layer</text>
+
+  <!-- React Components Grid -->
+  <rect x="80" y="140" width="160" height="80" class="react-card"/>
+  <text x="160" y="165" class="component-title">🏠 App</text>
+  <text x="160" y="180" class="component-desc">메인 컨테이너</text>
+  <text x="160" y="192" class="component-desc">라우팅 관리</text>
+  <text x="160" y="204" class="component-desc">글로벌 상태 연결</text>
+
+  <rect x="260" y="140" width="160" height="80" class="react-card"/>
+  <text x="340" y="165" class="component-title">🎯 GameBoard</text>
+  <text x="340" y="180" class="component-desc">7×2 게임 그리드</text>
+  <text x="340" y="192" class="component-desc">힌트 표시 시스템</text>
+  <text x="340" y="204" class="component-desc">진행상황 추적</text>
+
+  <rect x="440" y="140" width="160" height="80" class="react-card"/>
+  <text x="520" y="165" class="component-title">🔤 GameCell</text>
+  <text x="520" y="180" class="component-desc">개별 셀 렌더링</text>
+  <text x="520" y="192" class="component-desc">Framer Motion</text>
+  <text x="520" y="204" class="component-desc">상태별 스타일링</text>
+
+  <rect x="620" y="140" width="160" height="80" class="react-card"/>
+  <text x="700" y="165" class="component-title">⌨️ VirtualKeyboard</text>
+  <text x="700" y="180" class="component-desc">한글 가상 키보드</text>
+  <text x="700" y="192" class="component-desc">자모 피드백</text>
+  <text x="700" y="204" class="component-desc">터치 최적화</text>
+
+  <rect x="800" y="140" width="160" height="80" class="react-card"/>
+  <text x="880" y="165" class="component-title">🎣 Custom Hooks</text>
+  <text x="880" y="180" class="component-desc">useGame</text>
+  <text x="880" y="192" class="component-desc">useGameKeyboard</text>
+  <text x="880" y="204" class="component-desc">로직 분리</text>
+
+  <rect x="980" y="140" width="160" height="80" class="react-card"/>
+  <text x="1060" y="165" class="component-title">🎭 UI Components</text>
+  <text x="1060" y="180" class="component-desc">Material-UI</text>
+  <text x="1060" y="192" class="component-desc">재사용 가능</text>
+  <text x="1060" y="204" class="component-desc">테마 시스템</text>
+
+  <rect x="1160" y="140" width="160" height="80" class="react-card"/>
+  <text x="1240" y="165" class="component-title">🎨 Animations</text>
+  <text x="1240" y="180" class="component-desc">Framer Motion</text>
+  <text x="1240" y="192" class="component-desc">페이지 전환</text>
+  <text x="1240" y="204" class="component-desc">마이크로 인터랙션</text>
+
+  <!-- State Management Layer -->
+  <rect x="40" y="260" width="660" height="140" class="layer-bg"/>
+  <text x="60" y="285" class="layer-title">🗃️ State Management</text>
+
+  <rect x="80" y="300" width="200" height="80" class="store-card"/>
+  <text x="180" y="325" class="component-title">🎮 GameStore</text>
+  <text x="180" y="340" class="component-desc">Zustand 기반 상태관리</text>
+  <text x="180" y="352" class="component-desc">게임 로직 &amp; 진행상태</text>
+  <text x="180" y="364" class="component-desc">통계 &amp; 설정 관리</text>
+
+  <rect x="300" y="300" width="180" height="80" class="store-card"/>
+  <text x="390" y="325" class="component-title">🔤 HangulInput</text>
+  <text x="390" y="340" class="component-desc">한글 입력 시스템</text>
+  <text x="390" y="352" class="component-desc">자모 조합 &amp; 분해</text>
+  <text x="390" y="364" class="component-desc">이중자음 처리</text>
+
+  <rect x="500" y="300" width="180" height="80" class="store-card"/>
+  <text x="590" y="325" class="component-title">💾 Persistence</text>
+  <text x="590" y="340" class="component-desc">LocalStorage 관리</text>
+  <text x="590" y="352" class="component-desc">데이터 암호화</text>
+  <text x="590" y="364" class="component-desc">자동 백업</text>
+
+  <!-- Business Logic Layer -->
+  <rect x="720" y="260" width="640" height="140" class="layer-bg"/>
+  <text x="740" y="285" class="layer-title">⚙️ Business Logic &amp; Utils</text>
+
+  <rect x="760" y="300" width="140" height="80" class="utils-card"/>
+  <text x="830" y="325" class="component-title">🧠 gameLogic.ts</text>
+  <text x="830" y="340" class="component-desc">힌트 계산 엔진</text>
+  <text x="830" y="352" class="component-desc">승부 판정 로직</text>
+  <text x="830" y="364" class="component-desc">점수 &amp; 진행률</text>
+
+  <rect x="920" y="300" width="140" height="80" class="utils-card"/>
+  <text x="990" y="325" class="component-title">🔤 hangulUtils.ts</text>
+  <text x="990" y="340" class="component-desc">한글 분해/조합</text>
+  <text x="990" y="352" class="component-desc">문자 유효성 검사</text>
+  <text x="990" y="364" class="component-desc">자모 추출</text>
+
+  <rect x="1080" y="300" width="140" height="80" class="utils-card"/>
+  <text x="1150" y="325" class="component-title">🔐 encryption.ts</text>
+  <text x="1150" y="340" class="component-desc">데이터 보안</text>
+  <text x="1150" y="352" class="component-desc">AES 암호화</text>
+  <text x="1150" y="364" class="component-desc">안전한 저장소</text>
+
+  <rect x="1240" y="300" width="100" height="80" class="utils-card"/>
+  <text x="1290" y="325" class="component-title">📋 constants</text>
+  <text x="1290" y="340" class="component-desc">게임 상수</text>
+  <text x="1290" y="352" class="component-desc">설정값</text>
+  <text x="1290" y="364" class="component-desc">환경변수</text>
+
+  <!-- Data & Module Layer -->
+  <rect x="40" y="420" width="1320" height="140" class="layer-bg"/>
+  <text x="60" y="445" class="layer-title">📊 Data Layer &amp; External Modules</text>
+
+  <rect x="80" y="460" width="150" height="80" class="data-card"/>
+  <text x="155" y="485" class="component-title">📚 dictionary.ts</text>
+  <text x="155" y="500" class="component-desc">2350+ 한글 단어</text>
+  <text x="155" y="512" class="component-desc">난이도별 분류</text>
+  <text x="155" y="524" class="component-desc">유효성 검증</text>
+
+  <rect x="250" y="460" width="150" height="80" class="data-card"/>
+  <text x="325" y="485" class="component-title">🔍 word.js</text>
+  <text x="325" y="500" class="component-desc">Binary Search</text>
+  <text x="325" y="512" class="component-desc">최적화된 조회</text>
+  <text x="325" y="524" class="component-desc">성능 튜닝</text>
+
+  <rect x="420" y="460" width="150" height="80" class="data-card"/>
+  <text x="495" y="485" class="component-title">⌨️ keyboard.js</text>
+  <text x="495" y="500" class="component-desc">키보드 이벤트</text>
+  <text x="495" y="512" class="component-desc">색상 상태 관리</text>
+  <text x="495" y="524" class="component-desc">접근성 지원</text>
+
+  <rect x="590" y="460" width="150" height="80" class="data-card"/>
+  <text x="665" y="485" class="component-title">🔧 hangul_tools.js</text>
+  <text x="665" y="500" class="component-desc">레거시 지원</text>
+  <text x="665" y="512" class="component-desc">호환성 보장</text>
+  <text x="665" y="524" class="component-desc">변환 유틸리티</text>
+
+  <rect x="760" y="460" width="150" height="80" class="data-card"/>
+  <text x="835" y="485" class="component-title">🎯 game-core.js</text>
+  <text x="835" y="500" class="component-desc">핵심 게임 로직</text>
+  <text x="835" y="512" class="component-desc">상태 머신</text>
+  <text x="835" y="524" class="component-desc">이벤트 시스템</text>
+
+  <rect x="930" y="460" width="150" height="80" class="types-card"/>
+  <text x="1005" y="485" class="component-title">📝 TypeScript</text>
+  <text x="1005" y="500" class="component-desc">타입 정의</text>
+  <text x="1005" y="512" class="component-desc">인터페이스</text>
+  <text x="1005" y="524" class="component-desc">제네릭 유틸</text>
+
+  <rect x="1100" y="460" width="150" height="80" class="types-card"/>
+  <text x="1175" y="485" class="component-title">🌐 Global Types</text>
+  <text x="1175" y="500" class="component-desc">전역 타입</text>
+  <text x="1175" y="512" class="component-desc">공용 인터페이스</text>
+  <text x="1175" y="524" class="component-desc">유틸리티 타입</text>
+
+  <!-- Technology Stack -->
+  <rect x="40" y="580" width="1320" height="100" class="layer-bg"/>
+  <text x="60" y="605" class="layer-title">🛠️ Technology Stack</text>
+
+  <!-- Tech badges in a more organized grid -->
+  <rect x="80" y="620" width="80" height="30" class="tech-badge"/>
+  <text x="120" y="638" class="tech-text">React 19</text>
+
+  <rect x="180" y="620" width="80" height="30" class="tech-badge"/>
+  <text x="220" y="638" class="tech-text">TypeScript</text>
+
+  <rect x="280" y="620" width="80" height="30" class="tech-badge"/>
+  <text x="320" y="638" class="tech-text">Zustand</text>
+
+  <rect x="380" y="620" width="80" height="30" class="tech-badge"/>
+  <text x="420" y="638" class="tech-text">Vite</text>
+
+  <rect x="480" y="620" width="80" height="30" class="tech-badge"/>
+  <text x="520" y="638" class="tech-text">Material-UI</text>
+
+  <rect x="580" y="620" width="100" height="30" class="tech-badge"/>
+  <text x="630" y="638" class="tech-text">Framer Motion</text>
+
+  <rect x="700" y="620" width="80" height="30" class="tech-badge"/>
+  <text x="740" y="638" class="tech-text">Emotion</text>
+
+  <rect x="800" y="620" width="80" height="30" class="tech-badge"/>
+  <text x="840" y="638" class="tech-text">ESLint</text>
+
+  <rect x="900" y="620" width="80" height="30" class="tech-badge"/>
+  <text x="940" y="638" class="tech-text">Prettier</text>
+
+  <rect x="1000" y="620" width="100" height="30" class="tech-badge"/>
+  <text x="1050" y="638" class="tech-text">CSS Modules</text>
+
+  <rect x="1120" y="620" width="120" height="30" class="tech-badge"/>
+  <text x="1180" y="638" class="tech-text">PWA Support</text>
+
+  <rect x="1260" y="620" width="80" height="30" class="tech-badge"/>
+  <text x="1300" y="638" class="tech-text">Web APIs</text>
+
+  <!-- Data Flow Arrows -->
+  <!-- User input flow -->
+  <path d="M 700 220 Q 700 250 590 300" class="flow-sync"/>
+  <text x="650" y="270" class="flow-label">사용자 입력</text>
+
+  <!-- State to UI flow -->
+  <path d="M 180 300 Q 180 270 340 220" class="flow-sync"/>
+  <text x="260" y="250" class="flow-label">상태 업데이트</text>
+
+  <!-- Business logic flow -->
+  <path d="M 590 380 Q 700 350 830 380" class="flow-async"/>
+  <text x="710" y="345" class="flow-label">비즈니스 로직</text>
+
+  <!-- Data validation flow -->
+  <path d="M 155 460 Q 400 430 830 460" class="flow-async"/>
+  <text x="500" y="425" class="flow-label">단어 검증</text>
+
+  <!-- Hangul processing flow -->
+  <path d="M 390 380 Q 500 390 990 380" class="flow-sync"/>
+  <text x="690" y="395" class="flow-label">한글 처리</text>
+
+  <!-- Legend -->
+  <rect x="40" y="700" width="1320" height="200" class="layer-bg"/>
+  <text x="60" y="730" class="legend-title">🎯 아키텍처 특징 &amp; 주요 기능</text>
+
+  <!-- Legend items with improved layout -->
+  <g transform="translate(80, 750)">
+    <rect x="0" y="0" width="20" height="15" class="react-card"/>
+    <text x="30" y="12" class="legend-text">React Components - 컴포넌트 기반 UI 아키텍처</text>
+
+    <rect x="0" y="25" width="20" height="15" class="store-card"/>
+    <text x="30" y="37" class="legend-text">Zustand Store - 경량 상태 관리 솔루션</text>
+
+    <rect x="0" y="50" width="20" height="15" class="utils-card"/>
+    <text x="30" y="62" class="legend-text">Business Logic - 순수 함수 기반 비즈니스 로직</text>
+
+    <rect x="0" y="75" width="20" height="15" class="data-card"/>
+    <text x="30" y="87" class="legend-text">Data Layer - 게임 데이터 및 외부 모듈</text>
+
+    <line x1="0" y1="105" x2="20" y2="105" class="flow-sync"/>
+    <text x="30" y="110" class="legend-text">동기 데이터 흐름 - 즉시 처리되는 상태 변경</text>
+
+    <line x1="0" y1="125" x2="20" y2="125" class="flow-async"/>
+    <text x="30" y="130" class="legend-text">비동기 처리 - 계산 및 검증 로직</text>
+  </g>
+
+  <!-- Key features box -->
+  <g transform="translate(700, 750)">
+    <text x="0" y="0" class="legend-title">💡 핵심 기능 &amp; 최적화</text>
+    <text x="0" y="20" class="legend-text">• 한글 입력기: 완성형/조합형 지원, 이중자음 처리</text>
+    <text x="0" y="35" class="legend-text">• 힌트 시스템: 이모지 기반 직관적 피드백 (🟩🟨⬜)</text>
+    <text x="0" y="50" class="legend-text">• 성능 최적화: Binary Search, 메모이제이션, 지연 로딩</text>
+    <text x="0" y="65" class="legend-text">• 보안: AES 암호화 로컬스토리지, 데이터 무결성</text>
+    <text x="0" y="80" class="legend-text">• UX/UI: 반응형 디자인, 접근성, PWA 지원</text>
+    <text x="0" y="95" class="legend-text">• 확장성: 모듈러 아키텍처, 타입 안전성</text>
+  </g>
+
+</svg>

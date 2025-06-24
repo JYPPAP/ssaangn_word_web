@@ -77,6 +77,15 @@ const GameCell: React.FC<GameCellProps> = ({
   animated = true,
   delay = 0
 }) => {
+  // 셀 클릭 시 페이지 포커스 복원
+  const handleCellClick = () => {
+    // 페이지가 포커스를 잃었을 때 다시 포커스를 가져옴
+    if (document.hasFocus && !document.hasFocus()) {
+      window.focus();
+    }
+    // document.body에 포커스를 주어 키보드 이벤트가 다시 작동하도록 함
+    document.body.focus();
+  };
   // 셀 설정 계산
   const cellConfig = useMemo(() => {
     const hasContent = isInput ? !!char : !!hint;
@@ -179,6 +188,7 @@ const GameCell: React.FC<GameCellProps> = ({
       whileHover={isInput ? { scale: 1.02 } : undefined}
       whileTap={isInput ? { scale: 0.98 } : undefined}
       layout={animated}
+      onClick={handleCellClick}
     >
       {/* 셀 내용 */}
       <AnimatePresence mode="wait">
@@ -217,19 +227,6 @@ const GameCell: React.FC<GameCellProps> = ({
         )}
       </AnimatePresence>
 
-      {/* 힌트 설명 툴팁 */}
-      {!isInput && hint && cellConfig.hintConfig && (
-        <div className="cell-tooltip">
-          <div className="tooltip-content">
-            <div className="tooltip-title">
-              {hint} {cellConfig.hintConfig.name}
-            </div>
-            <div className="tooltip-description">
-              {cellConfig.hintConfig.description}
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* 입력 가이드 */}
       {isInput && !cellConfig.hasContent && !isActive && (

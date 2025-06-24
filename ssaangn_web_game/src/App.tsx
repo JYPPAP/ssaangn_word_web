@@ -1,30 +1,15 @@
-/**
- * 메인 앱 컴포넌트 - JavaScript modules 기반 한글 단어 맞추기 게임
- * 
- * 기존 React 컴포넌트들을 제거하고 JavaScript modules의 기능을 활용한
- * 새로운 게임 시스템으로 완전히 교체했습니다.
- * 
- * 주요 변경사항:
- * - JavaScript modules (game-core, game-board, keyboard) 활용
- * - 하루 1개 제한 제거, 무제한 게임 가능
- * - 원본 게임 로직 및 힌트 시스템 그대로 유지
- * - TypeScript와 React의 장점은 그대로 활용
- */
-
 import React, { useEffect, useState } from 'react';
 import ModuleGameApp from './components/ModuleGame/ModuleGameApp';
 import './App.css';
 
 interface AppSettings {
   darkMode: boolean;
-  compactMode: boolean;
   animationsEnabled: boolean;
   soundEnabled: boolean;
 }
 
 const DEFAULT_SETTINGS: AppSettings = {
   darkMode: false,
-  compactMode: false,
   animationsEnabled: true,
   soundEnabled: false
 };
@@ -67,16 +52,6 @@ const App: React.FC = () => {
     }
   }, [settings.darkMode]);
 
-  // 컴팩트 모드 적용
-  useEffect(() => {
-    const root = document.documentElement;
-    if (settings.compactMode) {
-      root.classList.add('compact-mode');
-    } else {
-      root.classList.remove('compact-mode');
-    }
-  }, [settings.compactMode]);
-
   // 전역 키보드 단축키
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -86,19 +61,13 @@ const App: React.FC = () => {
         setSettings(prev => ({ ...prev, darkMode: !prev.darkMode }));
       }
       
-      // Ctrl+Shift+C: 컴팩트 모드 토글
-      if (event.ctrlKey && event.shiftKey && event.key === 'C') {
-        event.preventDefault();
-        setSettings(prev => ({ ...prev, compactMode: !prev.compactMode }));
-      }
-      
       // Ctrl+Shift+A: 애니메이션 토글
       if (event.ctrlKey && event.shiftKey && event.key === 'A') {
         event.preventDefault();
         setSettings(prev => ({ ...prev, animationsEnabled: !prev.animationsEnabled }));
       }
     };
-
+    // cleanup 함수로 메모리 누수 방지
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, []);
@@ -107,7 +76,6 @@ const App: React.FC = () => {
   const getAppClass = () => {
     let className = 'app';
     if (settings.darkMode) className += ' dark-mode';
-    if (settings.compactMode) className += ' compact-mode';
     if (!settings.animationsEnabled) className += ' no-animations';
     return className;
   };
@@ -129,8 +97,7 @@ const App: React.FC = () => {
   return (
     <div className={getAppClass()}>
       {/* 메인 게임 */}
-      <ModuleGameApp 
-        compact={settings.compactMode}
+      <ModuleGameApp
         animated={settings.animationsEnabled}
       />
     </div>

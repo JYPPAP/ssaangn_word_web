@@ -261,8 +261,8 @@ export const useGameKeyboard = (
       return;
     }
     
-    // 한글 입력
-    if (onInput && key.length === 1 && /[가-힣]/.test(key)) {
+    // 한글 자모 및 완성 문자 입력 (ㄱ-ㅎ, ㅏ-ㅣ, 가-힣)
+    if (onInput && key.length === 1 && /[ㄱ-ㅎㅏ-ㅣ가-힣]/.test(key)) {
       event.preventDefault();
       onInput(key);
       return;

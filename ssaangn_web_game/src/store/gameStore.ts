@@ -13,7 +13,7 @@ import type { GameState, GameRow } from '../types/game';
 import { calculateHint, checkWinCondition, checkLoseCondition, calculateScore, getGameProgress } from '../utils/gameLogic';
 import { encryptData, decryptData } from '../utils/encryption';
 import { WORD_LIST, isValidWord } from '../data/dictionary';
-import { isValidHangulWord } from '../utils/hangulUtils';
+import { isValidHangulWord, HangulInput } from '../utils/hangulUtils';
 
 /**
  * 게임 통계 인터페이스
@@ -51,6 +51,9 @@ interface GameStore extends GameState {
   // 게임 진행 상태
   isLoading: boolean;
   error: string | null;
+  
+  // 한글 입력기
+  hangulInputs: HangulInput[];
   
   // 핵심 게임 액션
   initializeGame: () => void;
@@ -150,6 +153,9 @@ export const useGameStore = create<GameStore>()(
       settings: createInitialSettings(),
       isLoading: false,
       error: null,
+      
+      // 한글 입력기 (각 셀마다 하나씩)
+      hangulInputs: [new HangulInput(), new HangulInput()],
 
       /**
        * 게임 초기화
@@ -175,6 +181,7 @@ export const useGameStore = create<GameStore>()(
             currentRowIndex: 0,
             gameStatus: 'playing',
             attempts: 0,
+            hangulInputs: [new HangulInput(), new HangulInput()],
             isLoading: false,
             error: null
           });
@@ -200,7 +207,7 @@ export const useGameStore = create<GameStore>()(
       },
 
       /**
-       * 자모 입력 처리 - GameBoard에서 현재 위치에 직접 표시
+       * 자모 입력 처리 - 한글 입력기를 사용한 조합 처리
        */
       inputJamo: (jamo: string) => {
         const state = get();
@@ -210,8 +217,9 @@ export const useGameStore = create<GameStore>()(
 
         const newRows = [...state.rows];
         const currentRow = newRows[state.currentRowIndex];
+        const newHangulInputs = [...state.hangulInputs];
         
-        // 현재 행에서 빈 셀 찾기
+        // 현재 행에서 활성 셀 찾기 (빈 셀이 있으면 그 셀, 없으면 마지막 셀)
         let cellIndex = -1;
         for (let i = 0; i < currentRow.cells.length; i++) {
           if (!currentRow.cells[i].char) {
@@ -219,29 +227,47 @@ export const useGameStore = create<GameStore>()(
             break;
           }
         }
+        
+        // 모든 셀이 차 있으면 마지막 셀에 계속 입력
+        if (cellIndex === -1) {
+          cellIndex = currentRow.cells.length - 1;
+        }
 
-        // 빈 셀이 있으면 자모 입력
-        if (cellIndex !== -1) {
-          currentRow.cells[cellIndex] = {
-            char: jamo,
+        // 해당 셀의 한글 입력기로 자모 입력 처리
+        const inputResult = newHangulInputs[cellIndex].inputJamo(jamo);
+        
+        // 현재 셀 업데이트
+        currentRow.cells[cellIndex] = {
+          char: inputResult.char,
+          hint: null
+        };
+        
+        // overflow가 있으면 다음 셀로 이동
+        if (inputResult.overflow && cellIndex < currentRow.cells.length - 1) {
+          const nextCellIndex = cellIndex + 1;
+          newHangulInputs[nextCellIndex].reset();
+          const nextResult = newHangulInputs[nextCellIndex].inputJamo(inputResult.overflow);
+          currentRow.cells[nextCellIndex] = {
+            char: nextResult.char,
             hint: null
           };
-          
-          set({ 
-            rows: newRows, 
-            error: null 
-          });
+        }
+        
+        set({ 
+          rows: newRows, 
+          hangulInputs: newHangulInputs,
+          error: null 
+        });
 
-          // 2글자가 모두 입력되었으면 currentWord 업데이트
-          if (currentRow.cells.every(cell => cell.char)) {
-            const word = currentRow.cells.map(cell => cell.char).join('');
-            set({ currentWord: word });
-          }
+        // 2글자가 모두 입력되었으면 currentWord 업데이트
+        if (currentRow.cells.every(cell => cell.char)) {
+          const word = currentRow.cells.map(cell => cell.char).join('');
+          set({ currentWord: word });
         }
       },
 
       /**
-       * 백스페이스 처리 - 현재 행의 마지막 글자 삭제
+       * 백스페이스 처리 - 한글 입력기를 사용한 분해 처리
        */
       backspace: () => {
         const state = get();
@@ -251,6 +277,7 @@ export const useGameStore = create<GameStore>()(
 
         const newRows = [...state.rows];
         const currentRow = newRows[state.currentRowIndex];
+        const newHangulInputs = [...state.hangulInputs];
         
         // 현재 행에서 마지막으로 입력된 셀 찾기
         let cellIndex = -1;
@@ -261,15 +288,24 @@ export const useGameStore = create<GameStore>()(
           }
         }
 
-        // 입력된 셀이 있으면 삭제
+        // 입력된 셀이 있으면 한글 입력기로 백스페이스 처리
         if (cellIndex !== -1) {
+          const backspaceResult = newHangulInputs[cellIndex].backspace();
+          
           currentRow.cells[cellIndex] = {
-            char: '',
+            char: backspaceResult.char,
             hint: null
           };
           
+          // 완전히 삭제되고 이전 셀이 있으면 이전 셀로 이동
+          if (backspaceResult.completed && backspaceResult.char === '' && cellIndex > 0) {
+            newHangulInputs[cellIndex].reset();
+            // 이전 셀은 그대로 유지 (추가 백스페이스 처리 안함)
+          }
+          
           set({ 
             rows: newRows, 
+            hangulInputs: newHangulInputs,
             currentWord: '', 
             error: null 
           });
@@ -325,6 +361,7 @@ export const useGameStore = create<GameStore>()(
             gameStatus: newGameStatus,
             attempts: state.attempts + 1,
             currentWord: '',
+            hangulInputs: [new HangulInput(), new HangulInput()],
             isLoading: false,
             error: null
           });
@@ -367,6 +404,7 @@ export const useGameStore = create<GameStore>()(
           currentRowIndex: 0,
           gameStatus: 'playing',
           attempts: 0,
+          hangulInputs: [new HangulInput(), new HangulInput()],
           error: null
         });
         
@@ -397,6 +435,7 @@ export const useGameStore = create<GameStore>()(
             currentRowIndex: prevRowIndex,
             attempts: Math.max(0, state.attempts - 1),
             currentWord: '',
+            hangulInputs: [new HangulInput(), new HangulInput()],
             error: null
           });
 

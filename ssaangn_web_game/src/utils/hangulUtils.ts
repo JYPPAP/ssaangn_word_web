@@ -161,3 +161,304 @@ export const isValidHangulWord = (word: string): boolean => {
   if (!word || word.length === 0) return false;
   return Array.from(word).every(char => isHangul(char));
 };
+
+/**
+ * 자음인지 확인
+ * @param char - 확인할 문자
+ * @returns 자음 여부
+ */
+export const isConsonant = (char: string): boolean => {
+  if (!char || char.length !== 1) return false;
+  return CONSONANTS.includes(char) || FINAL_CONSONANTS.includes(char);
+};
+
+/**
+ * 모음인지 확인
+ * @param char - 확인할 문자
+ * @returns 모음 여부
+ */
+export const isVowel = (char: string): boolean => {
+  if (!char || char.length !== 1) return false;
+  return VOWELS.includes(char);
+};
+
+/**
+ * 이중자음 조합 맵
+ */
+const DOUBLE_CONSONANTS = {
+  'ㄱㄱ': 'ㄲ',
+  'ㄷㄷ': 'ㄸ',
+  'ㅂㅂ': 'ㅃ',
+  'ㅅㅅ': 'ㅆ',
+  'ㅈㅈ': 'ㅉ',
+  'ㄱㅅ': 'ㄳ',
+  'ㄴㅈ': 'ㄵ',
+  'ㄴㅎ': 'ㄶ',
+  'ㄹㄱ': 'ㄺ',
+  'ㄹㅁ': 'ㄻ',
+  'ㄹㅂ': 'ㄼ',
+  'ㄹㅅ': 'ㄽ',
+  'ㄹㅌ': 'ㄾ',
+  'ㄹㅍ': 'ㄿ',
+  'ㄹㅎ': 'ㅀ',
+  'ㅂㅅ': 'ㅄ'
+} as const;
+
+/**
+ * 이중자음 분해 맵
+ */
+const DOUBLE_CONSONANTS_DECOMPOSED = Object.fromEntries(
+  Object.entries(DOUBLE_CONSONANTS).map(([key, value]) => [value, key])
+);
+
+/**
+ * 복합모음 조합 맵
+ */
+const COMPLEX_VOWELS = {
+  'ㅗㅏ': 'ㅘ',
+  'ㅗㅐ': 'ㅙ',
+  'ㅗㅣ': 'ㅚ',
+  'ㅜㅓ': 'ㅝ',
+  'ㅜㅔ': 'ㅞ',
+  'ㅜㅣ': 'ㅟ',
+  'ㅡㅣ': 'ㅢ'
+} as const;
+
+/**
+ * 복합모음 분해 맵
+ */
+const COMPLEX_VOWELS_DECOMPOSED = Object.fromEntries(
+  Object.entries(COMPLEX_VOWELS).map(([key, value]) => [value, key])
+);
+
+/**
+ * 한글 입력 상태 인터페이스
+ */
+export interface HangulInputState {
+  consonant?: string;
+  vowel?: string;
+  finalConsonant?: string;
+  completed: boolean;
+}
+
+/**
+ * 한글 입력 처리 클래스
+ */
+export class HangulInput {
+  private state: HangulInputState = { completed: false };
+  
+  /**
+   * 자모 입력 처리
+   * @param jamo - 입력할 자모
+   * @returns 처리 결과 { char: 현재문자, overflow: 넘침문자, completed: 완성여부 }
+   */
+  inputJamo(jamo: string): { char: string; overflow?: string; completed: boolean } {
+    // 자음 입력 처리
+    if (isConsonant(jamo)) {
+      return this.handleConsonantInput(jamo);
+    }
+    
+    // 모음 입력 처리
+    if (isVowel(jamo)) {
+      return this.handleVowelInput(jamo);
+    }
+    
+    return { char: '', completed: false };
+  }
+  
+  /**
+   * 자음 입력 처리
+   */
+  private handleConsonantInput(consonant: string): { char: string; overflow?: string; completed: boolean } {
+    // 초성이 없는 경우 - 초성으로 설정
+    if (!this.state.consonant) {
+      this.state.consonant = consonant;
+      this.state.completed = false;
+      return { char: consonant, completed: false };
+    }
+    
+    // 모음이 없는 경우 (초성만 있음) - 이중자음 조합 시도
+    if (!this.state.vowel) {
+      const doubleConsonant = DOUBLE_CONSONANTS[this.state.consonant + consonant as keyof typeof DOUBLE_CONSONANTS];
+      if (doubleConsonant) {
+        this.state.consonant = doubleConsonant;
+        return { char: doubleConsonant, completed: false };
+      } else {
+        // 조합 불가능 - 새로운 글자 시작
+        const prevChar = this.state.consonant;
+        this.reset();
+        this.state.consonant = consonant;
+        return { char: consonant, overflow: prevChar, completed: true };
+      }
+    }
+    
+    // 받침이 없는 경우 - 받침으로 설정
+    if (!this.state.finalConsonant) {
+      this.state.finalConsonant = consonant;
+      const char = this.getCurrentChar();
+      this.state.completed = true;
+      return { char, completed: true };
+    }
+    
+    // 받침이 있는 경우 - 이중받침 조합 시도
+    const doubleFinal = DOUBLE_CONSONANTS[this.state.finalConsonant + consonant as keyof typeof DOUBLE_CONSONANTS];
+    if (doubleFinal) {
+      this.state.finalConsonant = doubleFinal;
+      const char = this.getCurrentChar();
+      return { char, completed: true };
+    } else {
+      // 조합 불가능 - 받침을 초성으로 하는 새 글자 시작
+      const prevChar = this.getCurrentChar();
+      this.reset();
+      this.state.consonant = consonant;
+      return { char: consonant, overflow: prevChar, completed: true };
+    }
+  }
+  
+  /**
+   * 모음 입력 처리
+   */
+  private handleVowelInput(vowel: string): { char: string; overflow?: string; completed: boolean } {
+    // 초성이 없는 경우 - ㅇ을 초성으로 설정
+    if (!this.state.consonant) {
+      this.state.consonant = 'ㅇ';
+      this.state.vowel = vowel;
+      const char = this.getCurrentChar();
+      return { char, completed: false };
+    }
+    
+    // 모음이 없는 경우 - 모음으로 설정
+    if (!this.state.vowel) {
+      this.state.vowel = vowel;
+      const char = this.getCurrentChar();
+      return { char, completed: false };
+    }
+    
+    // 복합모음 조합 시도
+    const complexVowel = COMPLEX_VOWELS[this.state.vowel + vowel as keyof typeof COMPLEX_VOWELS];
+    if (complexVowel) {
+      this.state.vowel = complexVowel;
+      const char = this.getCurrentChar();
+      return { char, completed: false };
+    }
+    
+    // 받침이 있는 경우 - 받침을 초성으로 하는 새 글자 시작
+    if (this.state.finalConsonant) {
+      // 이중받침인 경우 분해 처리
+      const decomposed = DOUBLE_CONSONANTS_DECOMPOSED[this.state.finalConsonant];
+      if (decomposed && decomposed.length === 2) {
+        const [first, second] = decomposed;
+        this.state.finalConsonant = first;
+        const prevChar = this.getCurrentChar();
+        this.reset();
+        this.state.consonant = second;
+        this.state.vowel = vowel;
+        const newChar = this.getCurrentChar();
+        return { char: newChar, overflow: prevChar, completed: true };
+      } else {
+        // 단일받침인 경우
+        const finalConsonant = this.state.finalConsonant;
+        this.state.finalConsonant = undefined;
+        const prevChar = this.getCurrentChar();
+        this.reset();
+        this.state.consonant = finalConsonant;
+        this.state.vowel = vowel;
+        const newChar = this.getCurrentChar();
+        return { char: newChar, overflow: prevChar, completed: true };
+      }
+    }
+    
+    // 받침이 없는 경우 - 새로운 글자 시작
+    const prevChar = this.getCurrentChar();
+    this.reset();
+    this.state.consonant = 'ㅇ';
+    this.state.vowel = vowel;
+    const newChar = this.getCurrentChar();
+    return { char: newChar, overflow: prevChar, completed: true };
+  }
+  
+  /**
+   * 현재 상태로 한글 문자 생성
+   */
+  private getCurrentChar(): string {
+    if (!this.state.consonant || !this.state.vowel) {
+      return this.state.consonant || this.state.vowel || '';
+    }
+    
+    const composed = composeHangul(
+      this.state.consonant,
+      this.state.vowel,
+      this.state.finalConsonant
+    );
+    
+    return composed || '';
+  }
+  
+  /**
+   * 백스페이스 처리
+   */
+  backspace(): { char: string; completed: boolean } {
+    // 받침이 있는 경우 - 받침 제거
+    if (this.state.finalConsonant) {
+      // 이중받침인 경우 분해
+      const decomposed = DOUBLE_CONSONANTS_DECOMPOSED[this.state.finalConsonant];
+      if (decomposed && decomposed.length === 2) {
+        this.state.finalConsonant = decomposed[0];
+      } else {
+        this.state.finalConsonant = undefined;
+      }
+      const char = this.getCurrentChar();
+      return { char, completed: false };
+    }
+    
+    // 모음이 있는 경우 - 모음 제거 또는 분해
+    if (this.state.vowel) {
+      const decomposed = COMPLEX_VOWELS_DECOMPOSED[this.state.vowel];
+      if (decomposed && decomposed.length === 2) {
+        this.state.vowel = decomposed[0];
+        const char = this.getCurrentChar();
+        return { char, completed: false };
+      } else {
+        this.state.vowel = undefined;
+        const char = this.state.consonant || '';
+        return { char, completed: false };
+      }
+    }
+    
+    // 초성만 있는 경우 - 초성 제거 또는 분해
+    if (this.state.consonant) {
+      const decomposed = DOUBLE_CONSONANTS_DECOMPOSED[this.state.consonant];
+      if (decomposed && decomposed.length === 2) {
+        this.state.consonant = decomposed[0];
+        const char = this.state.consonant;
+        return { char, completed: false };
+      } else {
+        this.reset();
+        return { char: '', completed: true };
+      }
+    }
+    
+    return { char: '', completed: true };
+  }
+  
+  /**
+   * 상태 초기화
+   */
+  reset(): void {
+    this.state = { completed: false };
+  }
+  
+  /**
+   * 현재 상태 반환
+   */
+  getState(): HangulInputState {
+    return { ...this.state };
+  }
+  
+  /**
+   * 완성된 문자 반환
+   */
+  getChar(): string {
+    return this.getCurrentChar();
+  }
+}

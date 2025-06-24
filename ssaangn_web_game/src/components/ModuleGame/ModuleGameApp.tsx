@@ -9,12 +9,10 @@ import ModuleKeyboard from './ModuleKeyboard';
 import './ModuleGameApp.css';
 
 interface ModuleGameAppProps {
-  compact?: boolean;
   animated?: boolean;
 }
 
 const ModuleGameApp: React.FC<ModuleGameAppProps> = ({
-  compact = false,
   animated = true
 }) => {
   const game = useModuleGame();
@@ -183,7 +181,7 @@ const ModuleGameApp: React.FC<ModuleGameAppProps> = ({
   }
 
   return (
-    <div className={`module-game-app ${compact ? 'compact' : ''}`}>
+    <div className={`module-game-app`}>
       {/* 메인 게임 영역 */}
       <main className="game-main">
         <div className="game-container">
@@ -204,7 +202,6 @@ const ModuleGameApp: React.FC<ModuleGameAppProps> = ({
             currentRow={game.currentRow}
             currentGuess={game.currentGuess}
             animated={animated}
-            compact={compact}
           />
           
           <ModuleKeyboard
@@ -213,7 +210,6 @@ const ModuleGameApp: React.FC<ModuleGameAppProps> = ({
             onSubmit={handleSubmit}
             onHint={handleHint}
             disabled={game.gameStatus !== 'playing' || game.isLoading}
-            compact={compact}
             animated={animated}
             hintsUsed={game.hintsUsed}
           />

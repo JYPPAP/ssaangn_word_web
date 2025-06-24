@@ -9,17 +9,18 @@
  * - 햅틱 피드백 (모바일)
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGame, useGameKeyboard } from '../../hooks';
+import { getHangulComponents } from '../../utils/hangulUtils';
 import './VirtualKeyboard.css';
 
-// 한글 키보드 레이아웃 (기본 자모만)
+// 한글 키보드 레이아웃 (기본 자모 + 이중자음)
 const HANGUL_LAYOUT = [
   // 첫 번째 줄 - 자음
   ['ㅂ', 'ㅈ', 'ㄷ', 'ㄱ', 'ㅅ', 'ㅁ', 'ㄴ', 'ㅇ', 'ㄹ'],
-  // 두 번째 줄 - 자음
-  ['ㅎ', 'ㅋ', 'ㅌ', 'ㅊ', 'ㅍ', 'ㅆ', 'ㄲ', 'ㄸ', 'ㅃ', 'ㅉ'],
+  // 두 번째 줄 - 자음 (이중자음 포함)
+  ['ㅎ', 'ㅋ', 'ㅌ', 'ㅊ', 'ㅍ', 'ㅆ', 'ㄲ', 'ㄸ', 'ㅃ', 'ㅉ', 'ㅄ'],
   // 세 번째 줄 - 모음
   ['ㅛ', 'ㅕ', 'ㅑ', 'ㅐ', 'ㅔ', 'ㅗ', 'ㅓ', 'ㅏ', 'ㅣ'],
   // 네 번째 줄 - 모음
@@ -51,6 +52,43 @@ const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({
 }) => {
   const game = useGame();
   const [pressedKeys, setPressedKeys] = useState<Set<string>>(new Set());
+
+  // 사용된 자모들의 상태를 계산
+  const usedJamoStatus = useMemo(() => {
+    const status = new Map<string, 'correct' | 'present' | 'absent'>();
+    
+    // 제출된 행들만 확인
+    const submittedRows = game.rows.filter(row => row.isSubmitted);
+    
+    submittedRows.forEach(row => {
+      row.cells.forEach(cell => {
+        if (cell.char) {
+          // 각 문자를 자모로 분해
+          const components = getHangulComponents(cell.char);
+          
+          components.forEach(jamo => {
+            // 힌트에 따라 자모 상태 결정
+            if (cell.hint === '🥕') {
+              // 완전 일치 - 초록색
+              status.set(jamo, 'correct');
+            } else if (cell.hint === '🍄' || cell.hint === '🧄' || cell.hint === '🍆' || cell.hint === '🍌') {
+              // 부분 일치 - 노란색 (단, 이미 correct가 아닌 경우에만)
+              if (status.get(jamo) !== 'correct') {
+                status.set(jamo, 'present');
+              }
+            } else if (cell.hint === '🍎') {
+              // 불일치 - 빨간색 (단, 이미 correct나 present가 아닌 경우에만)
+              if (!status.has(jamo)) {
+                status.set(jamo, 'absent');
+              }
+            }
+          });
+        }
+      });
+    });
+    
+    return status;
+  }, [game.rows]);
 
   // 키 조합 상태는 나중에 필요시 구현
 
@@ -97,8 +135,21 @@ const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({
   }, [soundEnabled]);
 
 
+  // 포커스 복원 함수
+  const restoreFocus = useCallback(() => {
+    // 페이지가 포커스를 잃었을 때 다시 포커스를 가져옴
+    if (document.hasFocus && !document.hasFocus()) {
+      window.focus();
+    }
+    // document.body에 포커스를 주어 키보드 이벤트가 다시 작동하도록 함
+    document.body.focus();
+  }, []);
+
   // 키 입력 처리 - 단순화된 버전
   const handleKeyPress = useCallback((key: string) => {
+    // 포커스 복원
+    restoreFocus();
+    
     if (game.gameStatus !== 'playing') {
       triggerHapticFeedback('heavy');
       playSound('error');
@@ -120,18 +171,24 @@ const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({
 
     // 자모를 게임보드로 직접 전달
     game.actions.inputJamo(key);
-  }, [game, triggerHapticFeedback, playSound]);
+  }, [game, triggerHapticFeedback, playSound, restoreFocus]);
 
 
   // 백스페이스 처리
   const handleBackspace = useCallback(() => {
+    // 포커스 복원
+    restoreFocus();
+    
     triggerHapticFeedback('medium');
     playSound('delete');
     game.actions.backspace();
-  }, [game, triggerHapticFeedback, playSound]);
+  }, [game, triggerHapticFeedback, playSound, restoreFocus]);
 
   // 단어 제출 처리
   const handleSubmit = useCallback(() => {
+    // 포커스 복원
+    restoreFocus();
+    
     if (game.currentWord.length !== 2) {
       triggerHapticFeedback('heavy');
       playSound('error');
@@ -141,7 +198,7 @@ const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({
     triggerHapticFeedback('heavy');
     playSound('submit');
     game.actions.submitWord(game.currentWord);
-  }, [game, triggerHapticFeedback, playSound]);
+  }, [game, triggerHapticFeedback, playSound, restoreFocus]);
 
   // 키보드 단축키 처리
   useGameKeyboard(
@@ -168,6 +225,13 @@ const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({
     let className = `keyboard-key ${keyType}-key`;
     if (pressedKeys.has(key)) className += ' pressed';
     if (game.gameStatus !== 'playing') className += ' disabled';
+    
+    // 자모 상태에 따른 색상 클래스 추가
+    const jamoStatus = usedJamoStatus.get(key);
+    if (jamoStatus) {
+      className += ` ${jamoStatus}`;
+    }
+    
     return className;
   };
 
@@ -227,7 +291,7 @@ const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({
             variants={animated ? rowVariants : undefined}
           >
             {row.map((key) => {
-              const isConsonant = 'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎㄲㄸㅃㅆㅉ'.includes(key);
+              const isConsonant = 'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎㄲㄸㅃㅆㅉㅄ'.includes(key);
               const keyType = isConsonant ? 'consonant' : 'vowel';
               
               return (
