@@ -2,76 +2,87 @@
  * JavaScript modules를 TypeScript에서 사용하기 위한 래퍼
  */
 
-// 모듈들을 동적으로 임포트
-let gameCore: any = null;
-let gameBoard: any = null;
-let keyboard: any = null;
-let constants: any = null;
-let storage: any = null;
-let statistics: any = null;
-let hangulTools: any = null;
-let helperTools: any = null;
+import type {
+  GameCoreModule,
+  GameBoardModule,
+  KeyboardModule,
+  ConstantsModule,
+  StorageModule,
+  StatisticsModule,
+  HangulToolsModule,
+  HelperToolsModule,
+  // ModuleImports,
+  GameState,
+  HintResult,
+  GameStatistics,
+  GameProgress,
+  HintRequestResult,
+  GuessSubmissionResult
+} from '../types/modules';
 
-export interface GameState {
-  secretWordString: string;
-  currentGuess: string[];
-  guessesRemaining: number;
-  boardState: any[];
-  isGameOver: boolean;
-  isGameWon: boolean;
-  yesList: string[][];
-  noList: string[][];
-  hotComboList: any[];
-  hintList: any[];
-  hintsUsed: boolean;
-}
+// word.js에서 ALL_WORDS_Length 동적 임포트
+let ALL_WORDS_Length: number = 1950; // 기본값, 초기화 시 업데이트됨
 
-export interface HintResult {
-  emoji: string;
-  color: string;
-  description: string;
-}
+// 모듈들을 타입 안전하게 저장
+let gameCore: GameCoreModule | null = null;
+let gameBoard: GameBoardModule | null = null;
+let keyboard: KeyboardModule | null = null;
+let constants: ConstantsModule | null = null;
+let storage: StorageModule | null = null;
+let statistics: StatisticsModule | null = null;
+let hangulTools: HangulToolsModule | null = null;
+let helperTools: HelperToolsModule | null = null;
+
+// 모듈 로더 함수들
+const loadModule = async <T>(path: string, moduleName: string): Promise<T> => {
+  try {
+    const module = await import(path);
+    return module as T;
+  } catch (error) {
+    throw new Error(`${moduleName} 모듈 로드 실패: ${error}`);
+  }
+};
 
 // 모듈 초기화
-export const initializeModules = async () => {
+export const initializeModules = async (): Promise<boolean> => {
   try {
-    // ES modules로 동적 임포트
-    const [
-      gameCoreModule,
-      gameBoardModule,
-      keyboardModule,
-      constantsModule,
-      storageModule,
-      statisticsModule,
-      hangulToolsModule,
-      helperToolsModule
-    ] = await Promise.all([
-      // @ts-ignore - JavaScript 모듈
-      import('../modules/game-core.js'),
-      // @ts-ignore - JavaScript 모듈
-      import('../modules/game-board.js'),
-      // @ts-ignore - JavaScript 모듈
-      import('../modules/keyboard.js'),
-      // @ts-ignore - JavaScript 모듈
-      import('../modules/constants.js'),
-      // @ts-ignore - JavaScript 모듈
-      import('../modules/storage.js'),
-      // @ts-ignore - JavaScript 모듈
-      import('../modules/statistics.js'),
-      // @ts-ignore - JavaScript 모듈
-      import('../modules/hangul_tools.js'),
-      // @ts-ignore - JavaScript 모듈
-      import('../modules/helper_tools.js')
+    // Promise.all을 사용하여 병렬로 모듈 로드
+    const modules = await Promise.allSettled([
+      loadModule<GameCoreModule>('../modules/game-core.js', 'GameCore'),
+      loadModule<GameBoardModule>('../modules/game-board.js', 'GameBoard'),
+      loadModule<KeyboardModule>('../modules/keyboard.js', 'Keyboard'),
+      loadModule<ConstantsModule>('../modules/constants.js', 'Constants'),
+      loadModule<StorageModule>('../modules/storage.js', 'Storage'),
+      loadModule<StatisticsModule>('../modules/statistics.js', 'Statistics'),
+      loadModule<HangulToolsModule>('../modules/hangul_tools.js', 'HangulTools'),
+      loadModule<HelperToolsModule>('../modules/helper_tools.js', 'HelperTools'),
+      loadModule<{ ALL_WORDS_Length: number }>('../modules/word.js', 'Word')
     ]);
 
-    gameCore = gameCoreModule;
-    gameBoard = gameBoardModule;
-    keyboard = keyboardModule;
-    constants = constantsModule;
-    storage = storageModule;
-    statistics = statisticsModule;
-    hangulTools = hangulToolsModule;
-    helperTools = helperToolsModule;
+    // 실패한 모듈들 체크
+    const failedModules: string[] = [];
+    modules.forEach((result, index) => {
+      if (result.status === 'rejected') {
+        const moduleNames = ['GameCore', 'GameBoard', 'Keyboard', 'Constants', 'Storage', 'Statistics', 'HangulTools', 'HelperTools', 'Word'];
+        failedModules.push(moduleNames[index]);
+        console.error(`❌ ${moduleNames[index]} 모듈 로드 실패:`, result.reason);
+      }
+    });
+
+    if (failedModules.length > 0) {
+      throw new Error(`다음 모듈들의 로드에 실패했습니다: ${failedModules.join(', ')}`);
+    }
+
+    // 성공한 모듈들 할당
+    const moduleResults = modules.map(result => result.status === 'fulfilled' ? result.value : null);
+    [gameCore, gameBoard, keyboard, constants, storage, statistics, hangulTools, helperTools] = moduleResults.slice(0, 8) as [GameCoreModule, GameBoardModule, KeyboardModule, ConstantsModule, StorageModule, StatisticsModule, HangulToolsModule, HelperToolsModule];
+    
+    // ALL_WORDS_Length 업데이트
+    const wordModule = moduleResults[8] as { ALL_WORDS_Length: number } | null;
+    if (wordModule && wordModule.ALL_WORDS_Length) {
+      ALL_WORDS_Length = wordModule.ALL_WORDS_Length;
+      console.log(`📚 단어 사전 크기: ${ALL_WORDS_Length}개`);
+    }
 
     console.log('🎮 게임 모듈 초기화 완료');
     return true;
@@ -87,8 +98,8 @@ export const GameCoreService = {
   startNewGame: (): string => {
     if (!gameCore) throw new Error('게임 모듈이 초기화되지 않았습니다');
     
-    // 랜덤한 단어 선택 (하루 제한 제거)
-    const randomIndex = Math.floor(Math.random() * 1000) + 1;
+    // 랜덤한 단어 선택 (모든 단어 접근 가능)
+    const randomIndex = Math.floor(Math.random() * ALL_WORDS_Length);
     gameCore.initializeGame(randomIndex);
     gameCore.initBoard();
     return gameCore.g_secretWordString;
@@ -113,7 +124,7 @@ export const GameCoreService = {
   },
 
   // 단어 제출 및 검증
-  submitGuess: (): { success: boolean; hints: HintResult[]; isGameOver: boolean; isWin: boolean } => {
+  submitGuess: (): GuessSubmissionResult => {
     if (!gameCore) throw new Error('게임 모듈이 초기화되지 않았습니다');
     
     const currentGuess = gameCore.g_currentGuess;
@@ -184,7 +195,7 @@ export const GameCoreService = {
   },
 
   // 힌트 요청
-  requestHint: (): { success: boolean; hint: string | null; message: string; jamo?: string } => {
+  requestHint: (): HintRequestResult => {
     if (!gameCore || !hangulTools) throw new Error('게임 모듈이 초기화되지 않았습니다');
     
     try {
@@ -251,8 +262,8 @@ export const GameCoreService = {
   }
 };
 
-// 힌트 데이터 가져오기
-const getHintData = (emoji: string) => {
+// 힌트 데이터 가져오기 (타입 안전성 개선)
+const getHintData = (emoji: string): { color: string; description: string } => {
   if (!constants) return { color: '#666', description: '알 수 없음' };
   
   switch (emoji) {
@@ -319,7 +330,7 @@ export const StatisticsService = {
   },
 
   // 통계 조회
-  getStatistics: () => {
+  getStatistics: (): GameStatistics => {
     if (!storage) throw new Error('저장소 모듈이 초기화되지 않았습니다');
     
     return {
@@ -384,7 +395,7 @@ export const StorageService = {
   },
 
   // 게임 진행상황 로드
-  loadGameProgress: () => {
+  loadGameProgress: (): GameProgress => {
     if (!storage) throw new Error('저장소 모듈이 초기화되지 않았습니다');
     
     return {
@@ -395,7 +406,7 @@ export const StorageService = {
 };
 
 // 상수 조회
-export const getConstants = () => {
+export const getConstants = (): ConstantsModule => {
   if (!constants) throw new Error('상수 모듈이 초기화되지 않았습니다');
   return constants;
 };
