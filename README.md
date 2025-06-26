@@ -1,1 +1,0 @@
-# ssaangn_word_web

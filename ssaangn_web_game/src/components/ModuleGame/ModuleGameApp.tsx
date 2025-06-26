@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { useModuleGame } from '../../hooks/useModuleGame';
 import ModuleGameBoard from './ModuleGameBoard';
 import ModuleKeyboard from './ModuleKeyboard';
+import { KeyboardService, getConstants } from '../../services/GameModules';
 import './ModuleGameApp.css';
 
 interface ModuleGameAppProps {
@@ -124,10 +125,8 @@ const ModuleGameApp: React.FC<ModuleGameAppProps> = ({
       // 힌트 자모를 키보드에 당근색으로 표시
       try {
         // GameModules의 KeyboardService를 통해 키 색상 설정
-        import('../../services/GameModules').then(({ KeyboardService, getConstants }) => {
-          const constants = getConstants();
-          KeyboardService.setKeyColor(hintResult.jamo!, constants.DATA_MATCH[constants.DATA_COLOR]);
-        });
+        const constants = getConstants();
+        KeyboardService.setKeyColor(hintResult.jamo!, constants.DATA_MATCH[constants.DATA_COLOR]);
       } catch (err) {
         console.warn('키보드 색상 설정 실패:', err);
       }

@@ -23,6 +23,17 @@ import type {
 // word.js에서 ALL_WORDS_Length 동적 임포트
 let ALL_WORDS_Length: number = 1950; // 기본값, 초기화 시 업데이트됨
 
+// 정적 imports
+import * as gameCoreModule from '../modules/game-core';
+import * as gameBoardModule from '../modules/game-board';
+import * as keyboardModule from '../modules/keyboard';
+import * as constantsModule from '../modules/constants';
+import * as storageModule from '../modules/storage';
+import * as statisticsModule from '../modules/statistics';
+import * as hangulToolsModule from '../modules/hangul_tools';
+import * as helperToolsModule from '../modules/helper_tools';
+import * as wordModule from '../modules/word';
+
 // 모듈들을 타입 안전하게 저장
 let gameCore: GameCoreModule | null = null;
 let gameBoard: GameBoardModule | null = null;
@@ -33,56 +44,22 @@ let statistics: StatisticsModule | null = null;
 let hangulTools: HangulToolsModule | null = null;
 let helperTools: HelperToolsModule | null = null;
 
-// 모듈 로더 함수들
-const loadModule = async <T>(path: string, moduleName: string): Promise<T> => {
-  try {
-    const module = await import(path);
-    return module as T;
-  } catch (error) {
-    throw new Error(`${moduleName} 모듈 로드 실패: ${error}`);
-  }
-};
-
 // 모듈 초기화
 export const initializeModules = async (): Promise<boolean> => {
   try {
-    // Promise.all을 사용하여 병렬로 모듈 로드
-    const modules = await Promise.allSettled([
-      loadModule<GameCoreModule>('../modules/game-core.js', 'GameCore'),
-      loadModule<GameBoardModule>('../modules/game-board.js', 'GameBoard'),
-      loadModule<KeyboardModule>('../modules/keyboard.js', 'Keyboard'),
-      loadModule<ConstantsModule>('../modules/constants.js', 'Constants'),
-      loadModule<StorageModule>('../modules/storage.js', 'Storage'),
-      loadModule<StatisticsModule>('../modules/statistics.js', 'Statistics'),
-      loadModule<HangulToolsModule>('../modules/hangul_tools.js', 'HangulTools'),
-      loadModule<HelperToolsModule>('../modules/helper_tools.js', 'HelperTools'),
-      loadModule<{ ALL_WORDS_Length: number }>('../modules/word.js', 'Word')
-    ]);
-
-    // 실패한 모듈들 체크
-    const failedModules: string[] = [];
-    modules.forEach((result, index) => {
-      if (result.status === 'rejected') {
-        const moduleNames = ['GameCore', 'GameBoard', 'Keyboard', 'Constants', 'Storage', 'Statistics', 'HangulTools', 'HelperTools', 'Word'];
-        failedModules.push(moduleNames[index]);
-        console.error(`❌ ${moduleNames[index]} 모듈 로드 실패:`, result.reason);
-      }
-    });
-
-    if (failedModules.length > 0) {
-      throw new Error(`다음 모듈들의 로드에 실패했습니다: ${failedModules.join(', ')}`);
-    }
-
-    // 성공한 모듈들 할당
-    const moduleResults = modules.map(result => result.status === 'fulfilled' ? result.value : null);
-    [gameCore, gameBoard, keyboard, constants, storage, statistics, hangulTools, helperTools] = moduleResults.slice(0, 8) as [GameCoreModule, GameBoardModule, KeyboardModule, ConstantsModule, StorageModule, StatisticsModule, HangulToolsModule, HelperToolsModule];
+    // 정적으로 로드된 모듈들을 할당
+    gameCore = gameCoreModule as unknown as GameCoreModule;
+    gameBoard = gameBoardModule as GameBoardModule;
+    keyboard = keyboardModule as unknown as KeyboardModule;
+    constants = constantsModule as unknown as ConstantsModule;
+    storage = storageModule as StorageModule;
+    statistics = statisticsModule as StatisticsModule;
+    hangulTools = hangulToolsModule as HangulToolsModule;
+    helperTools = helperToolsModule as HelperToolsModule;
     
-    // ALL_WORDS_Length 업데이트
-    const wordModule = moduleResults[8] as { ALL_WORDS_Length: number } | null;
-    if (wordModule && wordModule.ALL_WORDS_Length) {
-      ALL_WORDS_Length = wordModule.ALL_WORDS_Length;
-      console.log(`📚 단어 사전 크기: ${ALL_WORDS_Length}개`);
-    }
+    // word 모듈에서 ALL_WORDS_Length 가져오기
+    ALL_WORDS_Length = wordModule.ALL_WORDS_Length;
+    console.log(`📚 단어 사전 크기: ${ALL_WORDS_Length}개`);
 
     console.log('🎮 게임 모듈 초기화 완료');
     return true;

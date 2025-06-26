@@ -12,7 +12,7 @@ import { devtools, subscribeWithSelector } from 'zustand/middleware';
 import type { GameState, GameRow } from '../types/game';
 import { calculateHint, checkWinCondition, checkLoseCondition, calculateScore, getGameProgress } from '../utils/gameLogic';
 import { encryptData, decryptData } from '../utils/encryption';
-import { WORD_LIST, isValidWord } from '../data/dictionary';
+import { ALL_WORDS, fullDictionaryIncludes } from '../modules/word';
 import { isValidHangulWord, HangulInput } from '../utils/hangulUtils';
 
 /**
@@ -164,15 +164,7 @@ export const useGameStore = create<GameStore>()(
         set({ isLoading: true, error: null });
         
         try {
-          const { settings } = get();
-          let availableWords = WORD_LIST;
-          
-          // 난이도별 단어 필터링 (향후 확장 가능)
-          if (settings.difficulty === 'easy') {
-            availableWords = WORD_LIST.filter(word => word.length === 2);
-          }
-          
-          const randomWord = availableWords[Math.floor(Math.random() * availableWords.length)];
+          const randomWord = ALL_WORDS[Math.floor(Math.random() * ALL_WORDS.length)];
           
           set({
             targetWord: randomWord,
@@ -186,7 +178,7 @@ export const useGameStore = create<GameStore>()(
             error: null
           });
           
-          if (settings.autoSave) {
+          if (get().settings.autoSave) {
             get().saveGameState();
           }
         } catch (error) {
@@ -600,7 +592,7 @@ export const useGameStore = create<GameStore>()(
       isValidInput: (word: string) => {
         return word.length === 2 && 
                isValidHangulWord(word) && 
-               isValidWord(word);
+               fullDictionaryIncludes(word);
       },
 
       /**

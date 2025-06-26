@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import type { HintResult } from '../../services/GameModules';
+import type { HintResult } from '../../types/modules';
 import './ModuleGameBoard.css';
 
 interface GameCell {

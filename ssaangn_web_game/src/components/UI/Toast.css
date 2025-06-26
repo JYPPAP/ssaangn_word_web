@@ -1,0 +1,346 @@
+/**
+ * Toast 컴포넌트 스타일시트
+ * 
+ * 다양한 타입의 토스트 메시지를 위한 스타일을 정의합니다.
+ * - 반응형 디자인
+ * - 다크모드 지원
+ * - 부드러운 애니메이션
+ * - 접근성 고려
+ */
+
+/* ===== Toast 컨테이너 ===== */
+.toast-container {
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+  max-width: 400px;
+  width: 100%;
+}
+
+/* 위치별 컨테이너 스타일 */
+.toast-container-top-center {
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.toast-container-top-right {
+  top: 20px;
+  right: 20px;
+}
+
+.toast-container-bottom-center {
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.toast-container-bottom-right {
+  bottom: 20px;
+  right: 20px;
+}
+
+/* Toast 리스트 */
+.toast-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+/* ===== 개별 Toast ===== */
+.toast {
+  position: relative;
+  min-width: 320px;
+  max-width: 400px;
+  padding: 0;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.15),
+    0 4px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  pointer-events: auto;
+  overflow: hidden;
+  transform-origin: center top;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(10px);
+  
+  /* CSS 변수를 통한 동적 스타일링 */
+  --toast-color: #6c757d;
+  --toast-index: 0;
+}
+
+/* 다크모드 지원 */
+@media (prefers-color-scheme: dark) {
+  .toast {
+    background: #2d3748;
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+  }
+}
+
+/* 타입별 Toast 스타일 */
+.toast-error {
+  --toast-color: #dc3545;
+  border-left: 4px solid var(--toast-color);
+}
+
+.toast-warning {
+  --toast-color: #ffc107;
+  border-left: 4px solid var(--toast-color);
+}
+
+.toast-info {
+  --toast-color: #17a2b8;
+  border-left: 4px solid var(--toast-color);
+}
+
+.toast-success {
+  --toast-color: #28a745;
+  border-left: 4px solid var(--toast-color);
+}
+
+/* Toast 호버 효과 */
+.toast:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 15px 40px rgba(0, 0, 0, 0.2),
+    0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* ===== 진행률 바 ===== */
+.toast-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: var(--toast-color);
+  border-radius: 12px 12px 0 0;
+  opacity: 0.8;
+}
+
+/* ===== Toast 내용 ===== */
+.toast-content {
+  display: flex;
+  align-items: flex-start;
+  padding: 16px;
+  gap: 12px;
+  position: relative;
+}
+
+/* Toast 아이콘 */
+.toast-icon {
+  font-size: 20px;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+/* Toast 텍스트 영역 */
+.toast-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.toast-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--toast-color);
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.toast-message {
+  font-size: 14px;
+  line-height: 1.4;
+  color: #495057;
+  word-wrap: break-word;
+}
+
+@media (prefers-color-scheme: dark) {
+  .toast-message {
+    color: #e2e8f0;
+  }
+}
+
+/* ===== 닫기 버튼 ===== */
+.toast-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #6c757d;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.toast-close:hover {
+  background: rgba(0, 0, 0, 0.2);
+  transform: scale(1.1);
+}
+
+.toast-close:active {
+  transform: scale(0.95);
+}
+
+@media (prefers-color-scheme: dark) {
+  .toast-close {
+    background: rgba(255, 255, 255, 0.1);
+    color: #cbd5e0;
+  }
+  
+  .toast-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}
+
+/* ===== 반응형 디자인 ===== */
+@media (max-width: 480px) {
+  .toast-container {
+    left: 10px !important;
+    right: 10px !important;
+    transform: none !important;
+    max-width: none;
+  }
+  
+  .toast {
+    min-width: auto;
+    width: 100%;
+    margin: 0;
+  }
+  
+  .toast-content {
+    padding: 12px;
+    gap: 10px;
+  }
+  
+  .toast-icon {
+    font-size: 18px;
+  }
+  
+  .toast-title {
+    font-size: 13px;
+  }
+  
+  .toast-message {
+    font-size: 13px;
+  }
+}
+
+/* ===== 접근성 ===== */
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    transition: none !important;
+  }
+  
+  .toast-progress {
+    transition: none !important;
+  }
+}
+
+/* 포커스 관리 */
+.toast:focus-visible {
+  outline: 2px solid var(--toast-color);
+  outline-offset: 2px;
+}
+
+.toast-close:focus-visible {
+  outline: 2px solid #007bff;
+  outline-offset: 1px;
+}
+
+/* ===== 특별한 효과들 ===== */
+
+/* 게임 승리 토스트 특별 효과 */
+.toast-success.game-victory {
+  background: linear-gradient(135deg, #fff8e1 0%, #f3e5f5 100%);
+  border-left-color: #ff6b35;
+}
+
+.toast-success.game-victory .toast-icon {
+  animation: bounce 1s ease-in-out infinite alternate;
+}
+
+@keyframes bounce {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-3px); }
+}
+
+/* 에러 토스트 진동 효과 */
+.toast-error {
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+
+/* 토스트 등장 시 펄스 효과 */
+.toast::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, var(--toast-color), transparent, var(--toast-color));
+  border-radius: 14px;
+  opacity: 0;
+  animation: pulse-border 0.6s ease-out;
+  z-index: -1;
+}
+
+@keyframes pulse-border {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+/* 여러 토스트 스택 효과 */
+.toast-list .toast:nth-child(n+2) {
+  transform: scale(0.95) translateY(-4px);
+  opacity: 0.9;
+}
+
+.toast-list .toast:nth-child(n+3) {
+  transform: scale(0.9) translateY(-8px);
+  opacity: 0.7;
+}
+
+/* 토스트 제거 시 효과 */
+.toast.removing {
+  animation: fadeOutUp 0.3s ease-in forwards;
+}
+
+@keyframes fadeOutUp {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.95);
+  }
+}

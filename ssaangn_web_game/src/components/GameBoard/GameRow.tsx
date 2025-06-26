@@ -117,7 +117,7 @@ const GameRow: React.FC<GameRowProps> = ({
     visible: { 
       opacity: 1, 
       x: 0,
-      transition: { type: "spring", stiffness: 200 }
+      transition: { type: "spring" as const, stiffness: 200 }
     }
   };
 

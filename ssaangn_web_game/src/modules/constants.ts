@@ -70,29 +70,3 @@ export const DATA_MANY = [EMOTE_MANY, "마늘", "ㅁ", "rgb(229, 205, 179)", "ga
 export const DATA_EXISTS = [EMOTE_EXISTS, "가지", "ㄱ", "rgb(140, 66, 179)", "eggplant.png", "eggplant.png", "small-reveal", EMOTE_EXISTS + " 가지고 있어요~\n입력한 자음과 모음 중 하나만 있어요"];
 export const DATA_OPPOSITE = [EMOTE_OPPOSITE, "바난", "ㅂ", "rgb(248, 214, 87)", "banana_left.png", "banana.png", "small-reveal", EMOTE_OPPOSITE + " 반대로요~\n입력한 자음과 모음 중 1개 이상 있긴 있는데 반대쪽 글자에서 일치해요"];
 export const DATA_NONE = [EMOTE_NONE, "사과", "ㅅ", "rgb(255, 70, 45)", "apple.png", "apple.png", "none-reveal", EMOTE_NONE + " 사과해요~\n입력한 자음과 모음이 정답에 없어요"];
-
-// 스토리 텍스트 (일부만 포함, 전체는 필요시 추가)
-export const STORY_TEXT = [
-    "옛날 옛적에 어떤 마을에 야채를 파는 소녀가 살고 있었다. 소녀의 이름은 \"호박이\"였다.",
-    "호박이는 매일 아침 일찍 일어나서 야채들을 손질하고 시장으로 향했다.",
-    // ... 더 많은 스토리 텍스트들
-];
-
-export const STORY_CHAPTERS = [
-    [15, "야채를 파는 소녀와 호랑이", ""],
-    [18, "야채를 먹는 호랑이", "c2"],
-    [14, "보물찾기를 하는 호랑이", "c3"],
-    [13, "향수병을 앓는 할아버지", "c4"],
-    [18, "신비한 까치와 호랑이", "c5"],
-];
-
-export const STORY_PICS = [
-    [0, "<img src='story1.png' class='reply-image'>"],
-    [5, "<img src='story2.png' class='reply-image'>"],
-    [10, "<img src='story3.png' class='reply-image'>"],
-    // ... 더 많은 스토리 이미지들
-];
-
-// 복구 설정
-export const RESTORE_RANGE_LOW = 261;
-export const RESTORE_RANGE_HIGH = 262;

@@ -6,14 +6,14 @@ const JAMO_VOWEL_END = 'ᅵ';
 
 const HANGUL_SYLLABLE_TABLE_START = '가';
 const HANGUL_SYLLABLE_TABLE_END = '힣';
-const HANGUL_SYLLABLE_CONSONANT_SPAN = '까'.codePointAt() - '가'.codePointAt();
-const HANGUL_SYLLABLE_VOWEL_SPAN = '개'.codePointAt() - '가'.codePointAt();
+const HANGUL_SYLLABLE_CONSONANT_SPAN = '까'.codePointAt(0)! - '가'.codePointAt(0)!;
+const HANGUL_SYLLABLE_VOWEL_SPAN = '개'.codePointAt(0)! - '가'.codePointAt(0)!;
 
 export const HANGUL_CONSONANT_COMPONENTS = "ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ";
 export const HANGUL_VOWEL_COMPONENTS = "ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅛㅜㅠㅡㅣ";
 export const HANGUL_CONSONANT_VOWEL_LIST = HANGUL_CONSONANT_COMPONENTS + HANGUL_VOWEL_COMPONENTS;
 
-export const HANGUL_VOWEL_PAIRING =
+export const HANGUL_VOWEL_PAIRING: number[][] =
     [ //  ㅏ ㅐ  ㅑ ㅒ ㅓ ㅔ ㅕ ㅖ  ㅗ ㅛ ㅜ ㅠ  ㅡ ㅣ
         /*ㅏ*/[0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
         /*ㅐ*/[0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
@@ -31,7 +31,7 @@ export const HANGUL_VOWEL_PAIRING =
         /*ㅣ*/[0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0],
     ];
 
-export const HANGUL_CONSONANT_PAIRING =
+export const HANGUL_CONSONANT_PAIRING: number[][] =
     [ //     ㄱ  ㄲ ㄴ ㄷ ㄸ ㄹ ㅁ  ㅂ ㅃ ㅅ ㅆ ㅇ ㅈ  ㅉ ㅊ ㅋ ㅌ ㅍ ㅎ
         /*  */[1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1],
         /*ㄱ*/[1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -55,81 +55,79 @@ export const HANGUL_CONSONANT_PAIRING =
         /*ㅎ*/[1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     ];
 
-const BATCHIM_INDEX_NONE = hangulSyllableToHangulBatchimIndex('가');
-const BATCHIM_INDEX_ㄱ = hangulSyllableToHangulBatchimIndex('각');
-const BATCHIM_INDEX_ㄲ = hangulSyllableToHangulBatchimIndex('갂');
-const BATCHIM_INDEX_ㄳ = hangulSyllableToHangulBatchimIndex('갃');
-const BATCHIM_INDEX_ㄴ = hangulSyllableToHangulBatchimIndex('간');
-const BATCHIM_INDEX_ㄵ = hangulSyllableToHangulBatchimIndex('갅');
-const BATCHIM_INDEX_ㄶ = hangulSyllableToHangulBatchimIndex('갆');
-const BATCHIM_INDEX_ㄷ = hangulSyllableToHangulBatchimIndex('갇');
-const BATCHIM_INDEX_ㄹ = hangulSyllableToHangulBatchimIndex('갈');
-const BATCHIM_INDEX_ㄺ = hangulSyllableToHangulBatchimIndex('갉');
-const BATCHIM_INDEX_ㄻ = hangulSyllableToHangulBatchimIndex('갊');
-const BATCHIM_INDEX_ㄼ = hangulSyllableToHangulBatchimIndex('갋');
-const BATCHIM_INDEX_ㄽ = hangulSyllableToHangulBatchimIndex('갌');
-const BATCHIM_INDEX_ㄾ = hangulSyllableToHangulBatchimIndex('갍');
-const BATCHIM_INDEX_ㄿ = hangulSyllableToHangulBatchimIndex('갎');
-const BATCHIM_INDEX_ㅀ = hangulSyllableToHangulBatchimIndex('갏');
-const BATCHIM_INDEX_ㅁ = hangulSyllableToHangulBatchimIndex('감');
-const BATCHIM_INDEX_ㅂ = hangulSyllableToHangulBatchimIndex('갑');
-const BATCHIM_INDEX_ㅄ = hangulSyllableToHangulBatchimIndex('값');
-const BATCHIM_INDEX_ㅅ = hangulSyllableToHangulBatchimIndex('갓');
-const BATCHIM_INDEX_ㅆ = hangulSyllableToHangulBatchimIndex('갔');
-const BATCHIM_INDEX_ㅇ = hangulSyllableToHangulBatchimIndex('강');
-const BATCHIM_INDEX_ㅈ = hangulSyllableToHangulBatchimIndex('갖');
-const BATCHIM_INDEX_ㅊ = hangulSyllableToHangulBatchimIndex('갗');
-const BATCHIM_INDEX_ㅋ = hangulSyllableToHangulBatchimIndex('갘');
-const BATCHIM_INDEX_ㅌ = hangulSyllableToHangulBatchimIndex('같');
-const BATCHIM_INDEX_ㅍ = hangulSyllableToHangulBatchimIndex('갚');
-const BATCHIM_INDEX_ㅎ = hangulSyllableToHangulBatchimIndex('갛');
+const BATCHIM_INDEX_NONE = hangulSyllableToHangulBatchimIndex('가')!;
+const BATCHIM_INDEX_ㄱ = hangulSyllableToHangulBatchimIndex('각')!;
+const BATCHIM_INDEX_ㄲ = hangulSyllableToHangulBatchimIndex('갂')!;
+const BATCHIM_INDEX_ㄳ = hangulSyllableToHangulBatchimIndex('갃')!;
+const BATCHIM_INDEX_ㄴ = hangulSyllableToHangulBatchimIndex('간')!;
+const BATCHIM_INDEX_ㄵ = hangulSyllableToHangulBatchimIndex('갅')!;
+const BATCHIM_INDEX_ㄶ = hangulSyllableToHangulBatchimIndex('갆')!;
+const BATCHIM_INDEX_ㄷ = hangulSyllableToHangulBatchimIndex('갇')!;
+const BATCHIM_INDEX_ㄹ = hangulSyllableToHangulBatchimIndex('갈')!;
+const BATCHIM_INDEX_ㄺ = hangulSyllableToHangulBatchimIndex('갉')!;
+const BATCHIM_INDEX_ㄻ = hangulSyllableToHangulBatchimIndex('갊')!;
+const BATCHIM_INDEX_ㄼ = hangulSyllableToHangulBatchimIndex('갋')!;
+const BATCHIM_INDEX_ㄽ = hangulSyllableToHangulBatchimIndex('갌')!;
+const BATCHIM_INDEX_ㄾ = hangulSyllableToHangulBatchimIndex('갍')!;
+const BATCHIM_INDEX_ㄿ = hangulSyllableToHangulBatchimIndex('갎')!;
+const BATCHIM_INDEX_ㅀ = hangulSyllableToHangulBatchimIndex('갏')!;
+const BATCHIM_INDEX_ㅁ = hangulSyllableToHangulBatchimIndex('감')!;
+const BATCHIM_INDEX_ㅂ = hangulSyllableToHangulBatchimIndex('갑')!;
+const BATCHIM_INDEX_ㅄ = hangulSyllableToHangulBatchimIndex('값')!;
+const BATCHIM_INDEX_ㅅ = hangulSyllableToHangulBatchimIndex('갓')!;
+const BATCHIM_INDEX_ㅆ = hangulSyllableToHangulBatchimIndex('갔')!;
+const BATCHIM_INDEX_ㅇ = hangulSyllableToHangulBatchimIndex('강')!;
+const BATCHIM_INDEX_ㅈ = hangulSyllableToHangulBatchimIndex('갖')!;
+const BATCHIM_INDEX_ㅊ = hangulSyllableToHangulBatchimIndex('갗')!;
+const BATCHIM_INDEX_ㅋ = hangulSyllableToHangulBatchimIndex('갘')!;
+const BATCHIM_INDEX_ㅌ = hangulSyllableToHangulBatchimIndex('같')!;
+const BATCHIM_INDEX_ㅍ = hangulSyllableToHangulBatchimIndex('갚')!;
+const BATCHIM_INDEX_ㅎ = hangulSyllableToHangulBatchimIndex('갛')!;
 
-const CONSONANT_INDEX_ㄱ = jamoConsonantIndex('ᄀ');
-const CONSONANT_INDEX_ㄲ = jamoConsonantIndex('ᄁ');
-const CONSONANT_INDEX_ㄴ = jamoConsonantIndex('ᄂ');
-const CONSONANT_INDEX_ㄷ = jamoConsonantIndex('ᄃ');
-const CONSONANT_INDEX_ㄸ = jamoConsonantIndex('ᄄ');
-const CONSONANT_INDEX_ㄹ = jamoConsonantIndex('ᄅ');
-const CONSONANT_INDEX_ㅁ = jamoConsonantIndex('ᄆ');
-const CONSONANT_INDEX_ㅂ = jamoConsonantIndex('ᄇ');
-const CONSONANT_INDEX_ㅃ = jamoConsonantIndex('ᄈ');
-const CONSONANT_INDEX_ㅅ = jamoConsonantIndex('ᄉ');
-const CONSONANT_INDEX_ㅆ = jamoConsonantIndex('ᄊ');
-const CONSONANT_INDEX_ㅇ = jamoConsonantIndex('ᄋ');
-const CONSONANT_INDEX_ㅈ = jamoConsonantIndex('ᄌ');
-const CONSONANT_INDEX_ㅉ = jamoConsonantIndex('ᄍ');
-const CONSONANT_INDEX_ㅊ = jamoConsonantIndex('ᄎ');
-const CONSONANT_INDEX_ㅋ = jamoConsonantIndex('ᄏ');
-const CONSONANT_INDEX_ㅌ = jamoConsonantIndex('ᄐ');
-const CONSONANT_INDEX_ㅍ = jamoConsonantIndex('ᄑ');
-const CONSONANT_INDEX_ㅎ = jamoConsonantIndex('ᄒ');
+const CONSONANT_INDEX_ㄱ = jamoConsonantIndex('ᄀ')!;
+const CONSONANT_INDEX_ㄲ = jamoConsonantIndex('ᄁ')!;
+const CONSONANT_INDEX_ㄴ = jamoConsonantIndex('ᄂ')!;
+const CONSONANT_INDEX_ㄷ = jamoConsonantIndex('ᄃ')!;
+const CONSONANT_INDEX_ㄸ = jamoConsonantIndex('ᄄ')!;
+const CONSONANT_INDEX_ㄹ = jamoConsonantIndex('ᄅ')!;
+const CONSONANT_INDEX_ㅁ = jamoConsonantIndex('ᄆ')!;
+const CONSONANT_INDEX_ㅂ = jamoConsonantIndex('ᄇ')!;
+const CONSONANT_INDEX_ㅃ = jamoConsonantIndex('ᄈ')!;
+const CONSONANT_INDEX_ㅅ = jamoConsonantIndex('ᄉ')!;
+const CONSONANT_INDEX_ㅆ = jamoConsonantIndex('ᄊ')!;
+const CONSONANT_INDEX_ㅇ = jamoConsonantIndex('ᄋ')!;
+const CONSONANT_INDEX_ㅈ = jamoConsonantIndex('ᄌ')!;
+const CONSONANT_INDEX_ㅉ = jamoConsonantIndex('ᄍ')!;
+const CONSONANT_INDEX_ㅊ = jamoConsonantIndex('ᄎ')!;
+const CONSONANT_INDEX_ㅋ = jamoConsonantIndex('ᄏ')!;
+const CONSONANT_INDEX_ㅌ = jamoConsonantIndex('ᄐ')!;
+const CONSONANT_INDEX_ㅍ = jamoConsonantIndex('ᄑ')!;
+const CONSONANT_INDEX_ㅎ = jamoConsonantIndex('ᄒ')!;
 
-const VOWEL_INDEX_ㅏ = jamoVowelToVowelIndex('ㅏ');
-const VOWEL_INDEX_ㅐ = jamoVowelToVowelIndex('ㅐ');
-const VOWEL_INDEX_ㅑ = jamoVowelToVowelIndex('ㅑ');
-const VOWEL_INDEX_ㅒ = jamoVowelToVowelIndex('ㅒ');
-const VOWEL_INDEX_ㅓ = jamoVowelToVowelIndex('ㅓ');
-const VOWEL_INDEX_ㅔ = jamoVowelToVowelIndex('ㅔ');
-const VOWEL_INDEX_ㅕ = jamoVowelToVowelIndex('ㅕ');
-const VOWEL_INDEX_ㅖ = jamoVowelToVowelIndex('ㅖ');
-const VOWEL_INDEX_ㅗ = jamoVowelToVowelIndex('ㅗ');
-const VOWEL_INDEX_ㅘ = jamoVowelToVowelIndex('ㅘ');
-const VOWEL_INDEX_ㅙ = jamoVowelToVowelIndex('ㅙ');
-const VOWEL_INDEX_ㅚ = jamoVowelToVowelIndex('ㅚ');
-const VOWEL_INDEX_ㅛ = jamoVowelToVowelIndex('ㅛ');
-const VOWEL_INDEX_ㅜ = jamoVowelToVowelIndex('ㅜ');
-const VOWEL_INDEX_ㅝ = jamoVowelToVowelIndex('ㅝ');
-const VOWEL_INDEX_ㅞ = jamoVowelToVowelIndex('ㅞ');
-const VOWEL_INDEX_ㅟ = jamoVowelToVowelIndex('ㅟ');
-const VOWEL_INDEX_ㅠ = jamoVowelToVowelIndex('ㅠ');
-const VOWEL_INDEX_ㅡ = jamoVowelToVowelIndex('ㅡ');
-const VOWEL_INDEX_ㅢ = jamoVowelToVowelIndex('ㅢ');
-const VOWEL_INDEX_ㅣ = jamoVowelToVowelIndex('ㅣ');
+const VOWEL_INDEX_ㅏ = jamoVowelToVowelIndex('ㅏ')!;
+const VOWEL_INDEX_ㅐ = jamoVowelToVowelIndex('ㅐ')!;
+const VOWEL_INDEX_ㅑ = jamoVowelToVowelIndex('ㅑ')!;
+const VOWEL_INDEX_ㅒ = jamoVowelToVowelIndex('ㅒ')!;
+const VOWEL_INDEX_ㅓ = jamoVowelToVowelIndex('ㅓ')!;
+const VOWEL_INDEX_ㅔ = jamoVowelToVowelIndex('ㅔ')!;
+const VOWEL_INDEX_ㅕ = jamoVowelToVowelIndex('ㅕ')!;
+const VOWEL_INDEX_ㅖ = jamoVowelToVowelIndex('ㅖ')!;
+const VOWEL_INDEX_ㅗ = jamoVowelToVowelIndex('ㅗ')!;
+const VOWEL_INDEX_ㅘ = jamoVowelToVowelIndex('ㅘ')!;
+const VOWEL_INDEX_ㅙ = jamoVowelToVowelIndex('ㅙ')!;
+const VOWEL_INDEX_ㅚ = jamoVowelToVowelIndex('ㅚ')!;
+const VOWEL_INDEX_ㅛ = jamoVowelToVowelIndex('ㅛ')!;
+const VOWEL_INDEX_ㅜ = jamoVowelToVowelIndex('ㅜ')!;
+const VOWEL_INDEX_ㅝ = jamoVowelToVowelIndex('ㅝ')!;
+const VOWEL_INDEX_ㅞ = jamoVowelToVowelIndex('ㅞ')!;
+const VOWEL_INDEX_ㅟ = jamoVowelToVowelIndex('ㅟ')!;
+const VOWEL_INDEX_ㅠ = jamoVowelToVowelIndex('ㅠ')!;
+const VOWEL_INDEX_ㅡ = jamoVowelToVowelIndex('ㅡ')!;
+const VOWEL_INDEX_ㅢ = jamoVowelToVowelIndex('ㅢ')!;
+const VOWEL_INDEX_ㅣ = jamoVowelToVowelIndex('ㅣ')!;
 
-export function toJamo(character)
-{
-    switch (character)
-    {
+export function toJamo(character: string): string {
+    switch (character) {
         case 'ㄱ': return 'ᄀ';
         case 'ㄲ': return 'ᄁ';
         case 'ㄴ': return 'ᄂ';
@@ -175,108 +173,89 @@ export function toJamo(character)
     return character;
 }
 
-export function isHangulConsonant(character)
-{
-    if (character.length != 1)
-    {
+export function isHangulConsonant(character: string): boolean {
+    if (character.length !== 1) {
         return false;
     }
 
-    character = toJamo(character);
-
-    return character >= JAMO_CONSONANT_START && character <= JAMO_CONSONANT_END;
+    const jamoChar = toJamo(character);
+    return jamoChar >= JAMO_CONSONANT_START && jamoChar <= JAMO_CONSONANT_END;
 }
 
-export function isHangulVowel(character)
-{
-    if (character.length != 1)
-    {
+export function isHangulVowel(character: string): boolean {
+    if (character.length !== 1) {
         return false;
     }
 
-    character = toJamo(character);
-
-    return character >= JAMO_VOWEL_START && character <= JAMO_VOWEL_END;
+    const jamoChar = toJamo(character);
+    return jamoChar >= JAMO_VOWEL_START && jamoChar <= JAMO_VOWEL_END;
 }
 
-export function isHangulSyllable(character)
-{
-    if (character.length != 1)
-    {
+export function isHangulSyllable(character: string): boolean {
+    if (character.length !== 1) {
         return false;
     }
 
     return character >= HANGUL_SYLLABLE_TABLE_START && character <= HANGUL_SYLLABLE_TABLE_END;
 }
 
-export function hasBatchim(character)
-{
-    if (!isHangulSyllable(character))
-    {
+export function hasBatchim(character: string): boolean {
+    if (!isHangulSyllable(character)) {
         return false;
     }
 
-    let offset = hangulSyllableToHangulBatchimIndex(character);
-    return offset != BATCHIM_INDEX_NONE;
+    const offset = hangulSyllableToHangulBatchimIndex(character);
+    return offset !== BATCHIM_INDEX_NONE;
 }
 
-function jamoConsonantIndex(character)
-{
-    if (!isHangulConsonant(character))
-    {
+function jamoConsonantIndex(character: string): number | undefined {
+    if (!isHangulConsonant(character)) {
         return undefined;
     }
 
-    character = toJamo(character);
-
-    return character.charCodeAt(0) - JAMO_TABLE_START.codePointAt();
+    const jamoChar = toJamo(character);
+    return jamoChar.charCodeAt(0) - JAMO_TABLE_START.codePointAt(0)!;
 }
 
-function jamoConsonantToHangulSyllables(character)
-{
-    if (!isHangulConsonant(character))
-    {
+function jamoConsonantToHangulSyllables(character: string): number | undefined {
+    if (!isHangulConsonant(character)) {
         return undefined;
     }
 
-    character = toJamo(character);
-
-    return jamoConsonantIndex(character) * HANGUL_SYLLABLE_CONSONANT_SPAN + HANGUL_SYLLABLE_TABLE_START.codePointAt();
+    const jamoChar = toJamo(character);
+    const index = jamoConsonantIndex(jamoChar);
+    if (index === undefined) return undefined;
+    
+    return index * HANGUL_SYLLABLE_CONSONANT_SPAN + HANGUL_SYLLABLE_TABLE_START.codePointAt(0)!;
 }
 
-function jamoVowelToVowelIndex(character)
-{
-    if (!isHangulVowel(character))
-    {
+function jamoVowelToVowelIndex(character: string): number | undefined {
+    if (!isHangulVowel(character)) {
         return undefined;
     }
 
-    character = toJamo(character);
-
-    let code = character.charCodeAt(0);
-    return code - JAMO_VOWEL_START.codePointAt();
+    const jamoChar = toJamo(character);
+    const code = jamoChar.charCodeAt(0);
+    return code - JAMO_VOWEL_START.codePointAt(0)!;
 }
 
-function jamoVowelToHangulSyllableOffset(character)
-{
-    return jamoVowelToVowelIndex(character) * HANGUL_SYLLABLE_VOWEL_SPAN;
+function jamoVowelToHangulSyllableOffset(character: string): number | undefined {
+    const index = jamoVowelToVowelIndex(character);
+    if (index === undefined) return undefined;
+    return index * HANGUL_SYLLABLE_VOWEL_SPAN;
 }
 
-function hangulSyllableToHangulBatchimIndex(character)
-{
-    if (!isHangulSyllable(character))
-    {
+function hangulSyllableToHangulBatchimIndex(character: string): number | undefined {
+    if (!isHangulSyllable(character)) {
         return undefined;
     }
 
-    let code = character.charCodeAt(0);
-    return (code - HANGUL_SYLLABLE_TABLE_START.codePointAt()) % HANGUL_SYLLABLE_VOWEL_SPAN;
+    const code = character.charCodeAt(0);
+    return (code - HANGUL_SYLLABLE_TABLE_START.codePointAt(0)!) % HANGUL_SYLLABLE_VOWEL_SPAN;
 }
 
-function hangulBatchimIndexToJamoConsonant(index)
-{
-    switch (index)
-    {
+function hangulBatchimIndexToJamoConsonant(index: number): string | undefined {
+    switch (index) {
         case BATCHIM_INDEX_ㄱ:
         case BATCHIM_INDEX_ㄺ: return 'ᄀ';
         case BATCHIM_INDEX_ㄲ: return 'ᄁ';
@@ -309,16 +288,13 @@ function hangulBatchimIndexToJamoConsonant(index)
     return undefined;
 }
 
-function hangulSyllableToFirstConsonantJamoText(character)
-{
-    let index = hangulSyllableToHangulConsonantIndex(character);
-    if (index === undefined)
-    {
+function hangulSyllableToFirstConsonantJamoText(character: string): string | undefined {
+    const index = hangulSyllableToHangulConsonantIndex(character);
+    if (index === undefined) {
         return undefined;
     }
 
-    switch (index)
-    {
+    switch (index) {
         case CONSONANT_INDEX_ㄱ: return 'ㄱ';
         case CONSONANT_INDEX_ㄲ: return 'ㄲ';
         case CONSONANT_INDEX_ㄴ: return 'ㄴ';
@@ -343,10 +319,8 @@ function hangulSyllableToFirstConsonantJamoText(character)
     return undefined;
 }
 
-function jamoVowelIndexToJamoText(index)
-{
-    switch (index)
-    {
+function jamoVowelIndexToJamoText(index: number): string | undefined {
+    switch (index) {
         case VOWEL_INDEX_ㅏ: return 'ㅏ';
         case VOWEL_INDEX_ㅐ: return 'ㅐ';
         case VOWEL_INDEX_ㅑ: return 'ㅑ';
@@ -373,16 +347,12 @@ function jamoVowelIndexToJamoText(index)
     return undefined;
 }
 
-function jamoBatchimIndexToJamoText(index)
-{
-    if (index < BATCHIM_INDEX_NONE ||
-        index > BATCHIM_INDEX_ㅎ)
-    {
+function jamoBatchimIndexToJamoText(index: number): string | undefined {
+    if (index < BATCHIM_INDEX_NONE || index > BATCHIM_INDEX_ㅎ) {
         return undefined;
     }
 
-    switch (index)
-    {
+    switch (index) {
         case BATCHIM_INDEX_NONE: return '';
         case BATCHIM_INDEX_ㄱ: return 'ㄱ';
         case BATCHIM_INDEX_ㄲ: return 'ㄲ';
@@ -416,94 +386,95 @@ function jamoBatchimIndexToJamoText(index)
     return undefined;
 }
 
-function hangulSyllableToHangulConsonantIndex(character)
-{
-    if (!isHangulSyllable(character))
-    {
+function hangulSyllableToHangulConsonantIndex(character: string): number | undefined {
+    if (!isHangulSyllable(character)) {
         return undefined;
     }
 
-    let code = character.charCodeAt(0);
-    return Math.floor((code - HANGUL_SYLLABLE_TABLE_START.codePointAt()) / HANGUL_SYLLABLE_CONSONANT_SPAN);
+    const code = character.charCodeAt(0);
+    return Math.floor((code - HANGUL_SYLLABLE_TABLE_START.codePointAt(0)!) / HANGUL_SYLLABLE_CONSONANT_SPAN);
 }
 
-export function hangulSyllableToHangulVowelIndex(character)
-{
-    if (!isHangulSyllable(character))
-    {
+export function hangulSyllableToHangulVowelIndex(character: string): number | undefined {
+    if (!isHangulSyllable(character)) {
         return undefined;
     }
 
-    let code = character.charCodeAt(0);
-    return Math.floor((code - HANGUL_SYLLABLE_TABLE_START.codePointAt() - (hangulSyllableToHangulConsonantIndex(character) * HANGUL_SYLLABLE_CONSONANT_SPAN)) / HANGUL_SYLLABLE_VOWEL_SPAN);
+    const code = character.charCodeAt(0);
+    const consonantIndex = hangulSyllableToHangulConsonantIndex(character);
+    if (consonantIndex === undefined) return undefined;
+    
+    return Math.floor((code - HANGUL_SYLLABLE_TABLE_START.codePointAt(0)! - (consonantIndex * HANGUL_SYLLABLE_CONSONANT_SPAN)) / HANGUL_SYLLABLE_VOWEL_SPAN);
 }
 
-export function appendHangul(previous, pressedKey)
-{
-    if (isHangulConsonant(previous))
-    {
-        if (!isHangulVowel(pressedKey))
-        {
+export function appendHangul(previous: string, pressedKey: string): string {
+    if (isHangulConsonant(previous)) {
+        if (!isHangulVowel(pressedKey)) {
             return previous;
         }
 
-        return String.fromCharCode(jamoConsonantToHangulSyllables(previous) + jamoVowelToHangulSyllableOffset(pressedKey));
+        const syllables = jamoConsonantToHangulSyllables(previous);
+        const vowelOffset = jamoVowelToHangulSyllableOffset(pressedKey);
+        if (syllables === undefined || vowelOffset === undefined) return previous;
+        
+        return String.fromCharCode(syllables + vowelOffset);
     }
 
-    let appendedVowel = appendVowel(previous, pressedKey);
-    if (appendedVowel != undefined)
-    {
+    const appendedVowel = appendVowel(previous, pressedKey);
+    if (appendedVowel !== undefined) {
         return appendedVowel;
     }
 
-    let appendedBatchim = appendBatchim(previous, pressedKey);
-    if (appendedBatchim != undefined)
-    {
+    const appendedBatchim = appendBatchim(previous, pressedKey);
+    if (appendedBatchim !== undefined) {
         return appendedBatchim;
     }
 
     return previous + pressedKey;
 }
 
-function appendVowel(previous, pressedKey)
-{
-    if (!isHangulSyllable(previous))
-    {
+function appendVowel(previous: string, pressedKey: string): string | undefined {
+    if (!isHangulSyllable(previous)) {
         return undefined;
     }
 
-    if (!isHangulVowel(pressedKey))
-    {
+    if (!isHangulVowel(pressedKey)) {
         return undefined;
     }
 
-    let syllables = hangulSyllableToHangulConsonantIndex(previous) * HANGUL_SYLLABLE_CONSONANT_SPAN + HANGUL_SYLLABLE_TABLE_START.codePointAt();
-    let vowelIndex = hangulSyllableToHangulVowelIndex(previous);
-    let offset = hangulSyllableToHangulBatchimIndex(previous);
+    const consonantIndex = hangulSyllableToHangulConsonantIndex(previous);
+    const vowelIndex = hangulSyllableToHangulVowelIndex(previous);
+    const offset = hangulSyllableToHangulBatchimIndex(previous);
+    
+    if (consonantIndex === undefined || vowelIndex === undefined || offset === undefined) {
+        return undefined;
+    }
 
-    switch (offset)
-    {
+    const syllables = consonantIndex * HANGUL_SYLLABLE_CONSONANT_SPAN + HANGUL_SYLLABLE_TABLE_START.codePointAt(0)!;
+
+    switch (offset) {
         case BATCHIM_INDEX_NONE:
             break;
 
-        default:
-            let nextConsonant = hangulBatchimIndexToJamoConsonant(offset);
-            if (nextConsonant === undefined)
-            {
+        default: {
+            const nextConsonant = hangulBatchimIndexToJamoConsonant(offset);
+            if (nextConsonant === undefined) {
                 return undefined;
             }
 
-            return deleteOneBatchim(previous) +
-                String.fromCharCode(jamoConsonantToHangulSyllables(nextConsonant) + jamoVowelToVowelIndex(pressedKey) * HANGUL_SYLLABLE_VOWEL_SPAN);
+            const nextSyllables = jamoConsonantToHangulSyllables(nextConsonant);
+            const vowelIndexVal = jamoVowelToVowelIndex(pressedKey);
+            if (nextSyllables === undefined || vowelIndexVal === undefined) return undefined;
+            
+            return deleteOneBatchim(previous) + String.fromCharCode(nextSyllables + vowelIndexVal * HANGUL_SYLLABLE_VOWEL_SPAN);
+        }
     }
 
-    let character = toJamo(pressedKey);
+    const character = toJamo(pressedKey);
 
-    switch (vowelIndex)
-    {
+    switch (vowelIndex) {
         case VOWEL_INDEX_ㅗ:
-            switch (character)
-            {
+            switch (character) {
                 case 'ᅡ': return String.fromCharCode(syllables + VOWEL_INDEX_ㅘ * HANGUL_SYLLABLE_VOWEL_SPAN);
                 case 'ᅢ': return String.fromCharCode(syllables + VOWEL_INDEX_ㅙ * HANGUL_SYLLABLE_VOWEL_SPAN);
                 case 'ᅵ': return String.fromCharCode(syllables + VOWEL_INDEX_ㅚ * HANGUL_SYLLABLE_VOWEL_SPAN);
@@ -511,8 +482,7 @@ function appendVowel(previous, pressedKey)
             break;
 
         case VOWEL_INDEX_ㅜ:
-            switch (character)
-            {
+            switch (character) {
                 case 'ᅥ': return String.fromCharCode(syllables + VOWEL_INDEX_ㅝ * HANGUL_SYLLABLE_VOWEL_SPAN);
                 case 'ᅦ': return String.fromCharCode(syllables + VOWEL_INDEX_ㅞ * HANGUL_SYLLABLE_VOWEL_SPAN);
                 case 'ᅵ': return String.fromCharCode(syllables + VOWEL_INDEX_ㅟ * HANGUL_SYLLABLE_VOWEL_SPAN);
@@ -520,8 +490,7 @@ function appendVowel(previous, pressedKey)
             break;
 
         case VOWEL_INDEX_ㅡ:
-            switch (character)
-            {
+            switch (character) {
                 case 'ᅵ': return String.fromCharCode(syllables + VOWEL_INDEX_ㅢ * HANGUL_SYLLABLE_VOWEL_SPAN);
             }
             break;
@@ -530,28 +499,31 @@ function appendVowel(previous, pressedKey)
     return undefined;
 }
 
-function appendBatchim(previous, pressedKey)
-{
-    if (!isHangulSyllable(previous))
-    {
+function appendBatchim(previous: string, pressedKey: string): string | undefined {
+    if (!isHangulSyllable(previous)) {
         return undefined;
     }
 
-    if (!isHangulConsonant(pressedKey))
-    {
+    if (!isHangulConsonant(pressedKey)) {
         return undefined;
     }
 
-    let consonantIndex = jamoConsonantIndex(pressedKey);
+    const consonantIndex = jamoConsonantIndex(pressedKey);
+    if (consonantIndex === undefined) return undefined;
 
-    let syllables = hangulSyllableToHangulConsonantIndex(previous) * HANGUL_SYLLABLE_CONSONANT_SPAN + HANGUL_SYLLABLE_TABLE_START.codePointAt() +
-        hangulSyllableToHangulVowelIndex(previous) * HANGUL_SYLLABLE_VOWEL_SPAN;
-    let offset = hangulSyllableToHangulBatchimIndex(previous);
-    switch (offset)
-    {
+    const syllableConsonantIndex = hangulSyllableToHangulConsonantIndex(previous);
+    const vowelIndex = hangulSyllableToHangulVowelIndex(previous);
+    const offset = hangulSyllableToHangulBatchimIndex(previous);
+    
+    if (syllableConsonantIndex === undefined || vowelIndex === undefined || offset === undefined) {
+        return undefined;
+    }
+
+    const syllables = syllableConsonantIndex * HANGUL_SYLLABLE_CONSONANT_SPAN + HANGUL_SYLLABLE_TABLE_START.codePointAt(0)! + vowelIndex * HANGUL_SYLLABLE_VOWEL_SPAN;
+    
+    switch (offset) {
         case BATCHIM_INDEX_NONE:
-            switch (consonantIndex)
-            {
+            switch (consonantIndex) {
                 case CONSONANT_INDEX_ㄱ: return String.fromCharCode(syllables + BATCHIM_INDEX_ㄱ);
                 case CONSONANT_INDEX_ㄲ: return String.fromCharCode(syllables + BATCHIM_INDEX_ㄲ);
                 case CONSONANT_INDEX_ㄴ: return String.fromCharCode(syllables + BATCHIM_INDEX_ㄴ);
@@ -572,23 +544,20 @@ function appendBatchim(previous, pressedKey)
             break;
 
         case BATCHIM_INDEX_ㄱ:
-            switch (consonantIndex)
-            {
+            switch (consonantIndex) {
                 case CONSONANT_INDEX_ㅅ: return String.fromCharCode(syllables + BATCHIM_INDEX_ㄳ);
             }
             break;
 
         case BATCHIM_INDEX_ㄴ:
-            switch (consonantIndex)
-            {
+            switch (consonantIndex) {
                 case CONSONANT_INDEX_ㅈ: return String.fromCharCode(syllables + BATCHIM_INDEX_ㄵ);
                 case CONSONANT_INDEX_ㅎ: return String.fromCharCode(syllables + BATCHIM_INDEX_ㄶ);
             }
             break;
 
         case BATCHIM_INDEX_ㄹ:
-            switch (consonantIndex)
-            {
+            switch (consonantIndex) {
                 case CONSONANT_INDEX_ㄱ: return String.fromCharCode(syllables + BATCHIM_INDEX_ㄺ);
                 case CONSONANT_INDEX_ㅁ: return String.fromCharCode(syllables + BATCHIM_INDEX_ㄻ);
                 case CONSONANT_INDEX_ㅂ: return String.fromCharCode(syllables + BATCHIM_INDEX_ㄼ);
@@ -600,8 +569,7 @@ function appendBatchim(previous, pressedKey)
             break;
 
         case BATCHIM_INDEX_ㅂ:
-            switch (consonantIndex)
-            {
+            switch (consonantIndex) {
                 case CONSONANT_INDEX_ㅅ: return String.fromCharCode(syllables + BATCHIM_INDEX_ㅄ);
             }
             break;
@@ -610,38 +578,37 @@ function appendBatchim(previous, pressedKey)
     return undefined;
 }
 
-export function deleteOneJamo(previous)
-{
-    if (!isHangulSyllable(previous))
-    {
+export function deleteOneJamo(previous: string): string {
+    if (!isHangulSyllable(previous)) {
         return "";
     }
 
-    if (hasBatchim(previous))
-    {
+    if (hasBatchim(previous)) {
         return deleteOneBatchim(previous);
     }
 
     return deleteOneVowel(previous);
 }
 
-function deleteOneVowel(previous)
-{
-    if (hasBatchim(previous))
-    {
+function deleteOneVowel(previous: string): string {
+    if (hasBatchim(previous)) {
         return previous;
     }
 
-    if (!isHangulSyllable(previous))
-    {
+    if (!isHangulSyllable(previous)) {
         return previous;
     }
 
-    let syllables = hangulSyllableToHangulConsonantIndex(previous) * HANGUL_SYLLABLE_CONSONANT_SPAN + HANGUL_SYLLABLE_TABLE_START.codePointAt();
-    let vowelIndex = hangulSyllableToHangulVowelIndex(previous);
+    const consonantIndex = hangulSyllableToHangulConsonantIndex(previous);
+    const vowelIndex = hangulSyllableToHangulVowelIndex(previous);
+    
+    if (consonantIndex === undefined || vowelIndex === undefined) {
+        return previous;
+    }
 
-    switch (vowelIndex)
-    {
+    const syllables = consonantIndex * HANGUL_SYLLABLE_CONSONANT_SPAN + HANGUL_SYLLABLE_TABLE_START.codePointAt(0)!;
+
+    switch (vowelIndex) {
         case VOWEL_INDEX_ㅘ:
         case VOWEL_INDEX_ㅙ:
         case VOWEL_INDEX_ㅚ:
@@ -656,22 +623,25 @@ function deleteOneVowel(previous)
             return String.fromCharCode(syllables + VOWEL_INDEX_ㅡ * HANGUL_SYLLABLE_VOWEL_SPAN);
     }
 
-    return hangulSyllableToFirstConsonantJamoText(previous);
+    return hangulSyllableToFirstConsonantJamoText(previous) || previous;
 }
 
-function deleteOneBatchim(previous)
-{
-    if (!hasBatchim(previous))
-    {
+function deleteOneBatchim(previous: string): string {
+    if (!hasBatchim(previous)) {
         return previous;
     }
 
-    let syllables = hangulSyllableToHangulConsonantIndex(previous) * HANGUL_SYLLABLE_CONSONANT_SPAN + HANGUL_SYLLABLE_TABLE_START.codePointAt() +
-        hangulSyllableToHangulVowelIndex(previous) * HANGUL_SYLLABLE_VOWEL_SPAN;
-    let offset = hangulSyllableToHangulBatchimIndex(previous);
+    const consonantIndex = hangulSyllableToHangulConsonantIndex(previous);
+    const vowelIndex = hangulSyllableToHangulVowelIndex(previous);
+    const offset = hangulSyllableToHangulBatchimIndex(previous);
+    
+    if (consonantIndex === undefined || vowelIndex === undefined || offset === undefined) {
+        return previous;
+    }
 
-    switch (offset)
-    {
+    const syllables = consonantIndex * HANGUL_SYLLABLE_CONSONANT_SPAN + HANGUL_SYLLABLE_TABLE_START.codePointAt(0)! + vowelIndex * HANGUL_SYLLABLE_VOWEL_SPAN;
+
+    switch (offset) {
         case BATCHIM_INDEX_ㄱ:
         case BATCHIM_INDEX_ㄲ:
         case BATCHIM_INDEX_ㄴ:
@@ -710,37 +680,35 @@ function deleteOneBatchim(previous)
             return String.fromCharCode(syllables + BATCHIM_INDEX_ㅂ);
     }
 
-    return character;
+    return previous;
 }
 
-/* 수정 전 원본 코드 */
-export function hangulSyllableToJamoComponentsText(character)
-{
-    if (!isHangulSyllable(character))
-    {
+export function hangulSyllableToJamoComponentsText(character: string): string {
+    if (!isHangulSyllable(character)) {
         return character;
     }
 
-    let result = hangulSyllableToFirstConsonantJamoText(character);
+    let result = hangulSyllableToFirstConsonantJamoText(character) || '';
 
-    let vowelIndex = hangulSyllableToHangulVowelIndex(character);
-    result += jamoVowelIndexToJamoText(vowelIndex);
+    const vowelIndex = hangulSyllableToHangulVowelIndex(character);
+    if (vowelIndex !== undefined) {
+        result += jamoVowelIndexToJamoText(vowelIndex) || '';
+    }
 
-    let offset = hangulSyllableToHangulBatchimIndex(character);
-    result += jamoBatchimIndexToJamoText(offset);
+    const offset = hangulSyllableToHangulBatchimIndex(character);
+    if (offset !== undefined) {
+        result += jamoBatchimIndexToJamoText(offset) || '';
+    }
 
     return result;
 }
 
-export function keyboardKeyToJamoText(pressedKey)
-{
-    if (pressedKey.length != 1)
-    {
+export function keyboardKeyToJamoText(pressedKey: string): string {
+    if (pressedKey.length !== 1) {
         return pressedKey;
     }
 
-    switch (pressedKey)
-    {
+    switch (pressedKey) {
         case 'q': return 'ㅂ';
         case 'Q': return 'ㅃ';
         case 'w': return 'ㅈ';
@@ -783,15 +751,12 @@ export function keyboardKeyToJamoText(pressedKey)
     return pressedKey;
 }
 
-function vowelToPairingIndex(vowel)
-{
-    if (vowel.length != 1)
-    {
+function vowelToPairingIndex(vowel: string): number {
+    if (vowel.length !== 1) {
         return -1;
     }
 
-    switch (vowel)
-    {
+    switch (vowel) {
         case 'ㅏ': return 0;
         case 'ㅐ': return 1;
         case 'ㅑ': return 2;
@@ -811,15 +776,12 @@ function vowelToPairingIndex(vowel)
     return -1;
 }
 
-function consonantToPairingIndex(vowel)
-{
-    if (vowel.length != 1)
-    {
+function consonantToPairingIndex(consonant: string): number {
+    if (consonant.length !== 1) {
         return -1;
     }
 
-    switch (vowel)
-    {
+    switch (consonant) {
         case ' ': return 0;
         case 'ㄱ': return 1;
         case 'ㄲ': return 2;
@@ -845,35 +807,28 @@ function consonantToPairingIndex(vowel)
     return -1;
 }
 
-export function getUnpairableVowels(vowel)
-{
-    let unpairable = [];
-    if (vowel.length != 1)
-    {
+export function getUnpairableVowels(vowel: string): string[] {
+    const unpairable: string[] = [];
+    if (vowel.length !== 1) {
         return unpairable;
     }
 
-    let indexA = vowelToPairingIndex(vowel);
-    if (indexA < 0)
-    {
+    const indexA = vowelToPairingIndex(vowel);
+    if (indexA < 0) {
         return unpairable;
     }
 
-    for (let i = 0; i < HANGUL_VOWEL_COMPONENTS.length; i++)
-    {
-        if (HANGUL_VOWEL_COMPONENTS[i] == vowel)
-        {
+    for (let i = 0; i < HANGUL_VOWEL_COMPONENTS.length; i++) {
+        if (HANGUL_VOWEL_COMPONENTS[i] === vowel) {
             continue;
         }
 
-        let indexB = vowelToPairingIndex(HANGUL_VOWEL_COMPONENTS[i]);
-        if (indexB < 0)
-        {
+        const indexB = vowelToPairingIndex(HANGUL_VOWEL_COMPONENTS[i]);
+        if (indexB < 0) {
             continue;
         }
 
-        if (HANGUL_VOWEL_PAIRING[indexA][indexB] != 0)
-        {
+        if (HANGUL_VOWEL_PAIRING[indexA][indexB] !== 0) {
             continue;
         }
 
@@ -883,57 +838,46 @@ export function getUnpairableVowels(vowel)
     return unpairable;
 }
 
-export function areUnpairableVowels(vowelA, vowelB)
-{
-    if (vowelA.length != 1 || vowelB.length != 1)
-    {
+export function areUnpairableVowels(vowelA: string, vowelB: string): boolean {
+    if (vowelA.length !== 1 || vowelB.length !== 1) {
         return false;
     }
 
-    if (vowelA == vowelB)
-    {
+    if (vowelA === vowelB) {
         return false;
     }
 
-    let indexA = vowelToPairingIndex(vowelA);
-    if (indexA < 0)
-    {
+    const indexA = vowelToPairingIndex(vowelA);
+    if (indexA < 0) {
         return false;
     }
 
-    let indexB = vowelToPairingIndex(vowelB);
-    if (indexB < 0)
-    {
+    const indexB = vowelToPairingIndex(vowelB);
+    if (indexB < 0) {
         return false;
     }
 
-    return HANGUL_VOWEL_PAIRING[indexA][indexB] == 0;
+    return HANGUL_VOWEL_PAIRING[indexA][indexB] === 0;
 }
 
-export function getUnpairableConsonants(consonant)
-{
-    let unpairable = [];
-    if (consonant.length != 1)
-    {
+export function getUnpairableConsonants(consonant: string): string[] {
+    const unpairable: string[] = [];
+    if (consonant.length !== 1) {
         return unpairable;
     }
 
-    let indexA = consonantToPairingIndex(consonant);
-    if (indexA < 0)
-    {
+    const indexA = consonantToPairingIndex(consonant);
+    if (indexA < 0) {
         return unpairable;
     }
 
-    for (let i = 0; i < HANGUL_CONSONANT_COMPONENTS.length; i++)
-    {
-        let indexB = consonantToPairingIndex(HANGUL_CONSONANT_COMPONENTS[i]);
-        if (indexB < 0)
-        {
+    for (let i = 0; i < HANGUL_CONSONANT_COMPONENTS.length; i++) {
+        const indexB = consonantToPairingIndex(HANGUL_CONSONANT_COMPONENTS[i]);
+        if (indexB < 0) {
             continue;
         }
 
-        if (HANGUL_CONSONANT_PAIRING[indexA][indexB] != 0)
-        {
+        if (HANGUL_CONSONANT_PAIRING[indexA][indexB] !== 0) {
             continue;
         }
 
@@ -943,29 +887,24 @@ export function getUnpairableConsonants(consonant)
     return unpairable;
 }
 
-export function areUnpairableConsonants(consonantA, consonantB)
-{
-    if (consonantA.length != 1 || consonantB.length != 1)
-    {
+export function areUnpairableConsonants(consonantA: string, consonantB: string): boolean {
+    if (consonantA.length !== 1 || consonantB.length !== 1) {
         return false;
     }
 
-    if (consonantA == consonantB)
-    {
+    if (consonantA === consonantB) {
         return false;
     }
 
-    let indexA = consonantToPairingIndex(consonantA);
-    if (indexA < 0)
-    {
+    const indexA = consonantToPairingIndex(consonantA);
+    if (indexA < 0) {
         return false;
     }
 
-    let indexB = consonantToPairingIndex(consonantB);
-    if (indexB < 0)
-    {
+    const indexB = consonantToPairingIndex(consonantB);
+    if (indexB < 0) {
         return false;
     }
 
-    return HANGUL_CONSONANT_PAIRING[indexA][indexB] == 0;
+    return HANGUL_CONSONANT_PAIRING[indexA][indexB] === 0;
 }

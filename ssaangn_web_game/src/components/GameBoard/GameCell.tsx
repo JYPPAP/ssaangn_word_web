@@ -140,7 +140,7 @@ const GameCell: React.FC<GameCellProps> = ({
       scale: 1,
       rotateY: 0,
       transition: { 
-        type: "spring", 
+        type: "spring" as const, 
         stiffness: 200, 
         damping: 20,
         delay 
@@ -159,7 +159,7 @@ const GameCell: React.FC<GameCellProps> = ({
       transition: { 
         duration: 1.5, 
         repeat: Infinity,
-        ease: "easeInOut"
+        ease: "easeInOut" as const
       }
     }
   };

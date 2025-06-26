@@ -11,30 +11,27 @@ import {
     deleteOneJamo,
     keyboardKeyToJamoText,
     HANGUL_CONSONANT_VOWEL_LIST
-} from './hangul_tools.js';
-import { MAX_LETTERS } from './constants.js';
+} from './hangul_tools';
+import { MAX_LETTERS } from './constants';
 import { 
     g_currentGuess, 
     g_nextLetter, 
-    constructGuessString,
-    guessStringIsValid,
     incrementNextLetter,
     decrementNextLetter,
-    setNextLetter,
     setCurrentGuessLetter,
     pushCurrentGuessLetter,
     spliceCurrentGuess
-} from './game-core.js';
-import { updateCurrentGuessDisplay } from './game-board.js';
+} from './game-core';
+import { updateCurrentGuessDisplay } from './game-board';
 
 // 키보드 상태 변수들
-export let g_keyboardState = new Map(); // 키별 상태 저장
-export let g_disabledKeys = new Set(); // 비활성화된 키들
+export let g_keyboardState = new Map<string, { color: string; timestamp: number }>(); // 키별 상태 저장
+export let g_disabledKeys = new Set<string>(); // 비활성화된 키들
 
 /**
  * 키보드 준비 (색상 초기화 등)
  */
-export function prepareKeyboard() {
+export function prepareKeyboard(): void {
     // 모든 키보드 키 초기화
     if (HANGUL_CONSONANT_VOWEL_LIST && Array.isArray(HANGUL_CONSONANT_VOWEL_LIST)) {
         HANGUL_CONSONANT_VOWEL_LIST.forEach(key => {
@@ -58,7 +55,7 @@ export function prepareKeyboard() {
 /**
  * 키보드 이름 수정 (UI 표시용)
  */
-export function fixKeyboardNames() {
+export function fixKeyboardNames(): void {
     const keyMappings = {
         'ㅃ': 'ㅂ',
         'ㅉ': 'ㅈ', 
@@ -81,7 +78,7 @@ export function fixKeyboardNames() {
 /**
  * 키보드 키 색상 변경 (지연 적용)
  */
-export function shadeKeyBoardDelayed(letter, color, delay) {
+export function shadeKeyBoardDelayed(letter: string, color: string, delay: number): void {
     setTimeout(() => {
         shadeKeyBoard(letter, color);
     }, delay);
@@ -90,8 +87,8 @@ export function shadeKeyBoardDelayed(letter, color, delay) {
 /**
  * 키보드 키 색상 변경
  */
-export function shadeKeyBoard(letter, color) {
-    let key = getKeyboardKey(letter);
+export function shadeKeyBoard(letter: string, color: string): void {
+    const key = getKeyboardKey(letter);
     if (key) {
         key.style.backgroundColor = color;
         g_keyboardState.set(letter, { color, timestamp: Date.now() });
@@ -101,8 +98,8 @@ export function shadeKeyBoard(letter, color) {
 /**
  * 키보드 키 색상 리셋
  */
-export function resetKeyColor(letter) {
-    let key = getKeyboardKey(letter);
+export function resetKeyColor(letter: string): void {
+    const key = getKeyboardKey(letter);
     if (key) {
         key.style.backgroundColor = "";
         g_keyboardState.delete(letter);
@@ -112,7 +109,7 @@ export function resetKeyColor(letter) {
 /**
  * 일치하지 않는 키보드 키 비활성화
  */
-export function disableKeyBoardUnmatched() {
+export function disableKeyBoardUnmatched(): void {
     if (HANGUL_CONSONANT_VOWEL_LIST && Array.isArray(HANGUL_CONSONANT_VOWEL_LIST)) {
         HANGUL_CONSONANT_VOWEL_LIST.forEach(letter => {
             if (!g_keyboardState.has(letter)) {
@@ -134,8 +131,8 @@ export function disableKeyBoardUnmatched() {
 /**
  * 키보드 키 비활성화
  */
-export function disableKeyBoardKey(letter) {
-    let key = getKeyboardKey(letter);
+export function disableKeyBoardKey(letter: string): void {
+    const key = getKeyboardKey(letter);
     if (key) {
         key.classList.add('disabled');
         key.style.opacity = '0.3';
@@ -146,8 +143,8 @@ export function disableKeyBoardKey(letter) {
 /**
  * 키보드 키 활성화
  */
-export function enableKeyBoardKey(letter) {
-    let key = getKeyboardKey(letter);
+export function enableKeyBoardKey(letter: string): void {
+    const key = getKeyboardKey(letter);
     if (key) {
         key.classList.remove('disabled');
         key.style.opacity = '1';
@@ -158,8 +155,8 @@ export function enableKeyBoardKey(letter) {
 /**
  * 키보드 키 숨기기
  */
-export function hideKeyBoardKey(letter) {
-    let key = getKeyboardKey(letter);
+export function hideKeyBoardKey(letter: string): void {
+    const key = getKeyboardKey(letter);
     if (key) {
         key.style.display = 'none';
     }
@@ -168,8 +165,8 @@ export function hideKeyBoardKey(letter) {
 /**
  * 키보드 키 표시
  */
-export function showKeyBoardKey(letter) {
-    let key = getKeyboardKey(letter);
+export function showKeyBoardKey(letter: string): void {
+    const key = getKeyboardKey(letter);
     if (key) {
         key.style.display = '';
     }
@@ -178,14 +175,14 @@ export function showKeyBoardKey(letter) {
 /**
  * 키보드 키 색상 상태 가져오기
  */
-export function getKeyBoardShade(letter) {
+export function getKeyBoardShade(letter: string): string | null {
     return g_keyboardState.get(letter)?.color || null;
 }
 
 /**
  * 다음 글자로 이동
  */
-export function moveToNextLetter() {
+export function moveToNextLetter(): boolean {
     if (g_nextLetter < MAX_LETTERS - 1) {
         incrementNextLetter();
         updateCurrentGuessDisplay();
@@ -197,7 +194,7 @@ export function moveToNextLetter() {
 /**
  * 글자 입력 처리
  */
-export function insertLetter(pressedKey) {
+export function insertLetter(pressedKey: string): boolean {
     if (g_disabledKeys.has(pressedKey)) {
         return false; // 비활성화된 키
     }
@@ -207,7 +204,7 @@ export function insertLetter(pressedKey) {
     }
 
     // 한글 조합 처리
-    let jamoText;
+    let jamoText: string;
     
     // 이미 한글 문자라면 그대로 사용, 영어 키보드 입력이라면 변환
     if (isHangulConsonant(pressedKey) || isHangulVowel(pressedKey)) {
@@ -245,9 +242,9 @@ export function insertLetter(pressedKey) {
     }
     // 2. 자음+모음 조합에 받침 추가 가능 (받침이 없는 경우)
     else if (isHangulSyllable(currentChar) && isHangulConsonant(jamoText)) {
-        // 이미 받침이 있는지 확인 - hangul_tools.js의 함수를 사용
+        // 이미 받침이 있는지 확인 - hangul_tools.ts의 함수를 사용
         // 간단한 확인: 받침이 있는 완성형 글자인지 체크
-        let hasNoFinalConsonant = (currentChar.charCodeAt(0) - '가'.charCodeAt(0)) % 28 === 0;
+        const hasNoFinalConsonant = (currentChar.charCodeAt(0) - '가'.charCodeAt(0)) % 28 === 0;
         canCombine = hasNoFinalConsonant;
     }
     // 3. 모음끼리 조합 (ㅗ+ㅏ=ㅘ 등)
@@ -258,7 +255,7 @@ export function insertLetter(pressedKey) {
     
     if (canCombine) {
         // 조합 시도
-        let newChar = appendHangul(currentChar, jamoText);
+        const newChar = appendHangul(currentChar, jamoText);
         console.log(`한글 조합 시도: "${currentChar}" + "${jamoText}" = "${newChar}"`);
         console.log(`  - currentChar 길이: ${currentChar.length}, newChar 길이: ${newChar.length}`);
         console.log(`  - currentChar + jamoText: "${currentChar + jamoText}"`);
@@ -316,15 +313,15 @@ export function insertLetter(pressedKey) {
 /**
  * 글자 삭제 처리
  */
-export function deleteLetter() {
+export function deleteLetter(): boolean {
     if (g_nextLetter <= 0 && (!g_currentGuess[0] || g_currentGuess[0] === "")) {
         return false; // 삭제할 것이 없음
     }
 
     // 현재 위치에 미완성 글자가 있으면 자모 삭제
     if (g_nextLetter < g_currentGuess.length && g_currentGuess[g_nextLetter]) {
-        let currentChar = g_currentGuess[g_nextLetter];
-        let newChar = deleteOneJamo(currentChar);
+        const currentChar = g_currentGuess[g_nextLetter];
+        const newChar = deleteOneJamo(currentChar);
         
         if (newChar !== currentChar) {
             if (newChar === "") {
@@ -340,8 +337,8 @@ export function deleteLetter() {
     // 이전 위치로 이동해서 삭제
     if (g_nextLetter > 0) {
         decrementNextLetter();
-        let currentChar = g_currentGuess[g_nextLetter] || "";
-        let newChar = deleteOneJamo(currentChar);
+        const currentChar = g_currentGuess[g_nextLetter] || "";
+        const newChar = deleteOneJamo(currentChar);
         
         if (newChar === "") {
             spliceCurrentGuess(g_nextLetter, 1);
@@ -359,10 +356,10 @@ export function deleteLetter() {
 /**
  * 키보드 키 요소 가져오기
  */
-export function getKeyboardKey(letter) {
+export function getKeyboardKey(letter: string): HTMLElement | undefined {
     for (const elem of document.getElementsByClassName("keyboard-button")) {
         if (elem.textContent === letter || elem.id.startsWith(letter)) {
-            return elem;
+            return elem as HTMLElement;
         }
     }
     return undefined;
@@ -371,10 +368,10 @@ export function getKeyboardKey(letter) {
 /**
  * 힌트에 따라 키보드 색상 업데이트
  */
-export function colorKeyboardFromClues() {
+export function colorKeyboardFromClues(): void {
     // 게임 코어에서 힌트 정보를 가져와서 키보드 색상 업데이트
-    import('./game-core.js').then(gameCore => {
-        import('./constants.js').then(constants => {
+    import('./game-core').then(gameCore => {
+        import('./constants').then(constants => {
             // Yes 리스트 (당근 색상) - 정확한 위치의 자모들
             for (let pos = 0; pos < 2; pos++) {
                 if (gameCore.g_yesList[pos]) {

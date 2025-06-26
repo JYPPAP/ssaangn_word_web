@@ -11,6 +11,8 @@
 import React, {useMemo} from 'react';
 import {motion, AnimatePresence} from 'framer-motion';
 import {useGame, useGameKeyboard} from '../../hooks';
+import { useGlobalToast } from '../../hooks/useToast';
+import { ToastContainer } from '../UI/Toast';
 import GameRow from './GameRow';
 import './GameBoard.css';
 
@@ -29,12 +31,15 @@ const GameBoard: React.FC<GameBoardProps> = ({
                                                showHints = true
                                              }) => {
   const game = useGame();
+  const toast = useGlobalToast();
 
   // 키보드 입력 처리
   useGameKeyboard(
     () => {
       if (game.currentWord.length === 2) {
         game.actions.submitWord(game.currentWord);
+      } else {
+        toast.showGameError('invalid_length');
       }
     },
     () => {
@@ -97,7 +102,7 @@ const GameBoard: React.FC<GameBoardProps> = ({
     visible: {
       opacity: 1,
       x: 0,
-      transition: {type: "spring", stiffness: 100}
+      transition: {type: "spring" as const, stiffness: 100}
     }
   };
 
@@ -221,7 +226,15 @@ const GameBoard: React.FC<GameBoardProps> = ({
         )}
       </AnimatePresence>
 
-      {/* 오류 메시지 */}
+      {/* Toast 컨테이너 */}
+      <ToastContainer
+        toasts={toast.toasts}
+        onClose={toast.removeToast}
+        position={toast.position}
+        maxToasts={3}
+      />
+
+      {/* 기존 오류 메시지 (Toast로 대체될 예정) */}
       <AnimatePresence>
         {game.error && (
           <motion.div

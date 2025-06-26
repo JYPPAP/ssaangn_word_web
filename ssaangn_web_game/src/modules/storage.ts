@@ -3,52 +3,52 @@
  * 게임 데이터의 저장, 로드, 암호화/복호화를 담당합니다.
  */
 
-import * as helper from './helper_tools.js';
+import * as helper from './helper_tools';
 
 // 저장 데이터 정의 (원본 script.js에서 이동)
-export let sd_completedFirstDay = [false, helper.SDTypes.BOOL, "completedFirstDay"];
-export let sd_seenTutorial = [false, helper.SDTypes.BOOL, "seenTutorial"];
-export let sd_seenSubmit = [false, helper.SDTypes.BOOL, "seenSubmit"];
-export let sd_seenHelp = [false, helper.SDTypes.BOOL, "seenHelp"];
-export let sd_seenApple = [false, helper.SDTypes.BOOL, "seenApple"];
-export let sd_seenBanana = [false, helper.SDTypes.BOOL, "seenBanana"];
-export let sd_seenEggplant = [false, helper.SDTypes.BOOL, "seenEggplant"];
-export let sd_seenGarlic = [false, helper.SDTypes.BOOL, "seenGarlic"];
-export let sd_seenMushroom = [false, helper.SDTypes.BOOL, "seenMushroom"];
-export let sd_seenCarrot = [false, helper.SDTypes.BOOL, "seenCarrot"];
-export let sd_seenOrange = [false, helper.SDTypes.BOOL, "seenOrange"];
-export let sd_seenKiwi = [false, helper.SDTypes.BOOL, "seenKiwi"];
-export let sd_seenWelcomeBack = [false, helper.SDTypes.BOOL, "seenWelcomeBack"];
-export let sd_seenStreakCongrats = [false, helper.SDTypes.BOOL, "seenStreakCongrats"];
-export let sd_previousGuesses = ["", helper.SDTypes.STRING, "previousGuesses"];
-export let sd_previousHints = ["", helper.SDTypes.STRING, "previousHints"];
-export let sd_previousSecret = ["", helper.SDTypes.STRING, "previousSecret"];
-export let sd_previousCreatedMagpie = ["", helper.SDTypes.STRING, "previousCreatedMagpie"];
-export let sd_previousDayNumber = [0, helper.SDTypes.INT, "previousDayNumber"];
-export let sd_storiesUnlocked = [0, helper.SDTypes.INT, "storiesUnlocked"];
-export let sd_storiesRead = [0, helper.SDTypes.INT, "storiesRead"];
-export let sd_successCount = [0, helper.SDTypes.INT, "successCount"];
-export let sd_currentStreak = [0, helper.SDTypes.INT, "currentStreak"];
-export let sd_bestStreak = [0, helper.SDTypes.INT, "bestStreak"];
-export let sd_settingTheme = [0, helper.SDTypes.INT, "settingTheme"];
-export let sd_raceSuccessCount = [0, helper.SDTypes.INT, "raceSuccessCount"];
-export let sd_highwaterBackup = [0, helper.SDTypes.INT, "highwaterBackup"];
-export let sd_highwaterDayNumber = [0, helper.SDTypes.INT, "highwaterDayNumber"];
-export let sd_weeklyStatus = ["0,0,월욜,0,0,화욜,0,0,수욜,0,0,목욜,0,0,금욜,0,0,토욜,0,0,일욜", helper.SDTypes.STRING, "weeklyStatus"];
-export let sd_goldMedals = [0, helper.SDTypes.INT, "goldMedals"];
-export let sd_silverMedals = [0, helper.SDTypes.INT, "silverMedals"];
-export let sd_copperMedals = [0, helper.SDTypes.INT, "copperMedals"];
-export let sd_globalStatsRequestTime = [0, helper.SDTypes.INT, "globalStatsRequestTime"];
-export let sd_globalStats = ["", helper.SDTypes.STRING, "globalStats"];
-export let sd_unlockables = ["", helper.SDTypes.STRING, "unlockables"];
-export let sd_previousRaceHour = [0, helper.SDTypes.INT, "previousRaceHour"];
-export let sd_previousRaceScore = [0, helper.SDTypes.INT, "previousRaceScore"];
-export let sd_testVal = [undefined, helper.SDTypes.INT, "testVal"];
+export const sd_completedFirstDay: helper.StoredDataEntry<boolean> = [false, helper.SDTypes.BOOL, "completedFirstDay"];
+export const sd_seenTutorial: helper.StoredDataEntry<boolean> = [false, helper.SDTypes.BOOL, "seenTutorial"];
+export const sd_seenSubmit: helper.StoredDataEntry<boolean> = [false, helper.SDTypes.BOOL, "seenSubmit"];
+export const sd_seenHelp: helper.StoredDataEntry<boolean> = [false, helper.SDTypes.BOOL, "seenHelp"];
+export const sd_seenApple: helper.StoredDataEntry<boolean> = [false, helper.SDTypes.BOOL, "seenApple"];
+export const sd_seenBanana: helper.StoredDataEntry<boolean> = [false, helper.SDTypes.BOOL, "seenBanana"];
+export const sd_seenEggplant: helper.StoredDataEntry<boolean> = [false, helper.SDTypes.BOOL, "seenEggplant"];
+export const sd_seenGarlic: helper.StoredDataEntry<boolean> = [false, helper.SDTypes.BOOL, "seenGarlic"];
+export const sd_seenMushroom: helper.StoredDataEntry<boolean> = [false, helper.SDTypes.BOOL, "seenMushroom"];
+export const sd_seenCarrot: helper.StoredDataEntry<boolean> = [false, helper.SDTypes.BOOL, "seenCarrot"];
+export const sd_seenOrange: helper.StoredDataEntry<boolean> = [false, helper.SDTypes.BOOL, "seenOrange"];
+export const sd_seenKiwi: helper.StoredDataEntry<boolean> = [false, helper.SDTypes.BOOL, "seenKiwi"];
+export const sd_seenWelcomeBack: helper.StoredDataEntry<boolean> = [false, helper.SDTypes.BOOL, "seenWelcomeBack"];
+export const sd_seenStreakCongrats: helper.StoredDataEntry<boolean> = [false, helper.SDTypes.BOOL, "seenStreakCongrats"];
+export const sd_previousGuesses: helper.StoredDataEntry<string> = ["", helper.SDTypes.STRING, "previousGuesses"];
+export const sd_previousHints: helper.StoredDataEntry<string> = ["", helper.SDTypes.STRING, "previousHints"];
+export const sd_previousSecret: helper.StoredDataEntry<string> = ["", helper.SDTypes.STRING, "previousSecret"];
+export const sd_previousCreatedMagpie: helper.StoredDataEntry<string> = ["", helper.SDTypes.STRING, "previousCreatedMagpie"];
+export const sd_previousDayNumber: helper.StoredDataEntry<number> = [0, helper.SDTypes.INT, "previousDayNumber"];
+export const sd_storiesUnlocked: helper.StoredDataEntry<number> = [0, helper.SDTypes.INT, "storiesUnlocked"];
+export const sd_storiesRead: helper.StoredDataEntry<number> = [0, helper.SDTypes.INT, "storiesRead"];
+export const sd_successCount: helper.StoredDataEntry<number> = [0, helper.SDTypes.INT, "successCount"];
+export const sd_currentStreak: helper.StoredDataEntry<number> = [0, helper.SDTypes.INT, "currentStreak"];
+export const sd_bestStreak: helper.StoredDataEntry<number> = [0, helper.SDTypes.INT, "bestStreak"];
+export const sd_settingTheme: helper.StoredDataEntry<number> = [0, helper.SDTypes.INT, "settingTheme"];
+export const sd_raceSuccessCount: helper.StoredDataEntry<number> = [0, helper.SDTypes.INT, "raceSuccessCount"];
+export const sd_highwaterBackup: helper.StoredDataEntry<number> = [0, helper.SDTypes.INT, "highwaterBackup"];
+export const sd_highwaterDayNumber: helper.StoredDataEntry<number> = [0, helper.SDTypes.INT, "highwaterDayNumber"];
+export const sd_weeklyStatus: helper.StoredDataEntry<string> = ["0,0,월욜,0,0,화욜,0,0,수욜,0,0,목욜,0,0,금욜,0,0,토욜,0,0,일욜", helper.SDTypes.STRING, "weeklyStatus"];
+export const sd_goldMedals: helper.StoredDataEntry<number> = [0, helper.SDTypes.INT, "goldMedals"];
+export const sd_silverMedals: helper.StoredDataEntry<number> = [0, helper.SDTypes.INT, "silverMedals"];
+export const sd_copperMedals: helper.StoredDataEntry<number> = [0, helper.SDTypes.INT, "copperMedals"];
+export const sd_globalStatsRequestTime: helper.StoredDataEntry<number> = [0, helper.SDTypes.INT, "globalStatsRequestTime"];
+export const sd_globalStats: helper.StoredDataEntry<string> = ["", helper.SDTypes.STRING, "globalStats"];
+export const sd_unlockables: helper.StoredDataEntry<string> = ["", helper.SDTypes.STRING, "unlockables"];
+export const sd_previousRaceHour: helper.StoredDataEntry<number> = [0, helper.SDTypes.INT, "previousRaceHour"];
+export const sd_previousRaceScore: helper.StoredDataEntry<number> = [0, helper.SDTypes.INT, "previousRaceScore"];
+export const sd_testVal: helper.StoredDataEntry<number | undefined> = [undefined, helper.SDTypes.INT, "testVal"];
 
 /**
  * 모든 저장된 데이터를 로드합니다
  */
-export function getAllStoredData() {
+export function getAllStoredData(): void {
     helper.getStoredDataValue(sd_completedFirstDay);
     helper.getStoredDataValue(sd_seenTutorial);
     helper.getStoredDataValue(sd_seenSubmit);
@@ -92,21 +92,21 @@ export function getAllStoredData() {
 /**
  * 숫자를 한글 코드로 변환
  */
-export function numToHangulCode(num, key) {
-    return String.fromCharCode(key.codePointAt() + num);
+export function numToHangulCode(num: number, key: string): string {
+    return String.fromCharCode(key.codePointAt(0)! + num);
 }
 
 /**
  * 한글 코드를 숫자로 변환
  */
-export function hangulCodeToNum(code, key) {
-    return code.codePointAt() - key.codePointAt();
+export function hangulCodeToNum(code: string, key: string): number {
+    return code.codePointAt(0)! - key.codePointAt(0)!;
 }
 
 /**
  * 모든 저장된 데이터를 내보내기
  */
-export function exportAllStoredData() {
+export function exportAllStoredData(): string {
     let exportedData = "";
     
     exportedData += numToHangulCode(sd_completedFirstDay[0] ? 1 : 0, 'ㄱ');
@@ -143,7 +143,7 @@ export function exportAllStoredData() {
 /**
  * 모든 저장된 데이터를 가져오기
  */
-export function importAllStoredData(data) {
+export function importAllStoredData(data: string): boolean {
     if (!data || data.length < 20) {
         return false;
     }
@@ -154,7 +154,7 @@ export function importAllStoredData(data) {
 /**
  * 내부 데이터 가져오기 구현
  */
-function importAllStoredDataInternal(data) {
+function importAllStoredDataInternal(data: string): boolean {
     try {
         let index = 0;
         

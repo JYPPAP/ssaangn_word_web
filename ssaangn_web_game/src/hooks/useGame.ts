@@ -246,6 +246,7 @@ export const useGameKeyboard = (
     }
 
     const key = event.key;
+    const isShiftPressed = event.shiftKey;
     
     // Enter 키 - 단어 제출
     if (key === 'Enter' && onSubmit) {
@@ -259,6 +260,23 @@ export const useGameKeyboard = (
       event.preventDefault();
       onDelete();
       return;
+    }
+    
+    // Shift + 기본자음 조합으로 이중자음 입력
+    if (onInput && isShiftPressed && key.length === 1) {
+      const doubleConsonantMap: { [key: string]: string } = {
+        'ㄱ': 'ㄲ',
+        'ㄷ': 'ㄸ', 
+        'ㅂ': 'ㅃ',
+        'ㅅ': 'ㅆ',
+        'ㅈ': 'ㅉ'
+      };
+      
+      if (doubleConsonantMap[key]) {
+        event.preventDefault();
+        onInput(doubleConsonantMap[key]);
+        return;
+      }
     }
     
     // 한글 자모 및 완성 문자 입력 (ㄱ-ㅎ, ㅏ-ㅣ, 가-힣)

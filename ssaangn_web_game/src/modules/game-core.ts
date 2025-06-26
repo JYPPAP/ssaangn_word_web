@@ -4,18 +4,17 @@
  */
 
 import {
-    ALL_WORDS,
     getSecretWordByDayIndex,
     numSecretWords,
     fullDictionaryIncludes
-} from './word.js';
+} from './word';
 
 import { 
     hangulSyllableToJamoComponentsText,
     isHangulSyllable,
     isHangulConsonant
-} from './hangul_tools.js';
-import * as helper from './helper_tools.js';
+} from './hangul_tools';
+import * as helper from './helper_tools';
 import { 
     MAX_LETTERS, 
     NUMBER_OF_GUESSES,
@@ -32,7 +31,7 @@ import {
     DATA_OPPOSITE,
     DATA_NONE,
     DATA_COLOR
-} from './constants.js';
+} from './constants';
 import { 
     sd_previousSecret,
     sd_previousGuesses,
@@ -45,23 +44,32 @@ import {
     sd_seenSubmit,
     sd_successCount,
     sd_bestStreak
-} from './storage.js';
+} from './storage';
+
+// 타입 정의
+interface JamoSet {
+    [index: number]: string;
+    length: number;
+}
+
+type GuessArray = string[];
+type BoardStateArray = any[];
 
 // 게임 상태 변수들
-export let g_secretWordString = "";
-export let g_secretWordJamoSets = undefined;
-export let g_dayNumber = 0;
-export let g_guessesRemaining = NUMBER_OF_GUESSES;
-export let g_currentGuess = [];
-export let g_nextLetter = 0;
-export let g_boardState = [];
+export let g_secretWordString: string = "";
+export let g_secretWordJamoSets: JamoSet[] | undefined = undefined;
+export let g_dayNumber: number = 0;
+export let g_guessesRemaining: number = NUMBER_OF_GUESSES;
+export let g_currentGuess: GuessArray = [];
+export let g_nextLetter: number = 0;
+export let g_boardState: BoardStateArray = [];
 
 // 추가 게임 상태 변수들
-export let g_debugging = false;
-export let g_isPracticeGame = false;
-export let g_invalidWordCount = 0;
-export let g_finalVictoryGuesses = undefined;
-export let g_hintsUsed = false;
+export let g_debugging: boolean = false;
+export let g_isPracticeGame: boolean = false;
+export let g_invalidWordCount: number = 0;
+export let g_finalVictoryGuesses: number | undefined = undefined;
+export let g_hintsUsed: boolean = false;
 
 // 상수들
 export const MAX_INVALID_WORDS = 3;
@@ -78,42 +86,42 @@ export function clearBoardState() {
 /**
  * 보드 상태 설정
  */
-export function setBoardState(newState) {
+export function setBoardState(newState: BoardStateArray): void {
     g_boardState = newState;
 }
 
 /**
  * 다음 글자 위치 증가
  */
-export function incrementNextLetter() {
+export function incrementNextLetter(): void {
     g_nextLetter++;
 }
 
 /**
  * 다음 글자 위치 감소
  */
-export function decrementNextLetter() {
+export function decrementNextLetter(): void {
     g_nextLetter--;
 }
 
 /**
  * 다음 글자 위치 설정
  */
-export function setNextLetter(value) {
+export function setNextLetter(value: number): void {
     g_nextLetter = value;
 }
 
 /**
  * 힌트 사용 상태 설정
  */
-export function setHintsUsed(value) {
+export function setHintsUsed(value: boolean): void {
     g_hintsUsed = value;
 }
 
 /**
  * 현재 추측 배열에 글자 설정
  */
-export function setCurrentGuessLetter(index, letter) {
+export function setCurrentGuessLetter(index: number, letter: string): void {
     if (index >= 0 && index < MAX_LETTERS) {
         // 배열 크기 조정
         while (g_currentGuess.length <= index) {
@@ -126,7 +134,7 @@ export function setCurrentGuessLetter(index, letter) {
 /**
  * 현재 추측 배열에 글자 추가
  */
-export function pushCurrentGuessLetter(letter) {
+export function pushCurrentGuessLetter(letter: string): void {
     if (g_currentGuess.length < MAX_LETTERS) {
         g_currentGuess.push(letter);
     }
@@ -135,21 +143,21 @@ export function pushCurrentGuessLetter(letter) {
 /**
  * 현재 추측 배열에서 글자 제거
  */
-export function spliceCurrentGuess(index, deleteCount) {
+export function spliceCurrentGuess(index: number, deleteCount: number): void {
     if (index >= 0 && index < g_currentGuess.length) {
         g_currentGuess.splice(index, deleteCount);
     }
 }
-export let g_yesList = [[], []];
-export let g_noList = [[], []];
-export let g_hotComboList = [[], []];
-export let g_hintList = [];
-export let g_foundMatch = [false, false];
+export let g_yesList: string[][] = [[], []];
+export let g_noList: string[][] = [[], []];
+export let g_hotComboList: any[][] = [[], []];
+export let g_hintList: string[] = [];
+export let g_foundMatch: boolean[] = [false, false];
 
 /**
  * 게임 초기화
  */
-export function initializeGame(dayNumber) {
+export function initializeGame(dayNumber: number): void {
     g_dayNumber = dayNumber;
     g_secretWordString = getSecretWordByDayIndex(dayNumber);
     
@@ -180,7 +188,7 @@ export function createSecretWordJamoSets() {
 /**
  * 비밀 단어가 변경되었는지 확인하고 새로 고침
  */
-export function refreshIfSecretWordChanged() {
+export function refreshIfSecretWordChanged(): void {
     if (sd_previousSecret[0] == g_secretWordString) {
         // 비밀 단어가 변경되지 않음
         return;
@@ -242,49 +250,75 @@ export function guessStringIsValid() {
 /**
  * 단어 암호화
  */
-export function encryptWord(wordString) {
+export function encryptWord(wordString: string): string {
     return wordString; // 간단한 구현, 실제로는 더 복잡한 암호화 로직
 }
 
 /**
  * 단어 복호화
  */
-export function decryptWord(wordString, mul1, mul2) {
+export function decryptWord(wordString: string, mul1: number, mul2: number): string {
     return decryptWordInternal(wordString, mul1, mul2);
 }
 
 /**
  * 내부 단어 복호화 구현
  */
-export function decryptWordInternal(wordString, mul1, mul2) {
+export function decryptWordInternal(wordString: string, _mul1: number, _mul2: number): string {
     // 실제 복호화 로직 구현 필요
     // 여기서는 간단한 버전만 제공
     return wordString;
 }
 
 /**
- * 자모 성분 수 계산
+ * 자모 성분 수 계산 (중복 방지 버전)
+ * 추측 자모에서 정답 자모와 일치하는 개수를 정확히 계산합니다.
+ * 정답에 있는 자모의 개수를 초과하여 계산하지 않습니다.
  */
-export function countJamoComponentsInOtherJamoComponents(setA, setB) {
-    let count = 0;
-    for (let i = 0; i < setA.length; i++) {
-        for (let j = 0; j < setB.length; j++) {
-            if (setA[i] === setB[j]) {
-                count++;
-            }
+export function countJamoComponentsInOtherJamoComponents(setA: string, setB: string): number {
+    return countJamoMatches(setA, setB);
+}
+
+/**
+ * 새로운 자모 매칭 함수 (중복 계산 방지)
+ * @param guessJamo 추측한 자모 문자열
+ * @param targetJamo 정답 자모 문자열
+ * @returns 올바르게 계산된 일치 자모 개수
+ */
+function countJamoMatches(guessJamo: string, targetJamo: string): number {
+    const targetCount = new Map<string, number>();
+    const usedCount = new Map<string, number>();
+    
+    // 정답 자모의 개수 세기
+    for (const jamo of targetJamo) {
+        targetCount.set(jamo, (targetCount.get(jamo) || 0) + 1);
+    }
+    
+    // 추측 자모에서 일치하는 개수 세기 (정답 개수 초과 불가)
+    let matches = 0;
+    for (const jamo of guessJamo) {
+        const targetAvailable = targetCount.get(jamo) || 0;
+        const alreadyUsed = usedCount.get(jamo) || 0;
+        
+        if (alreadyUsed < targetAvailable) {
+            matches++;
+            usedCount.set(jamo, alreadyUsed + 1);
         }
     }
-    return count;
+    
+    return matches;
 }
 
 /**
  * 글자가 모든 면에서 틀렸는지 확인
  */
-export function isCharacterAllWrong(character) {
-    let jamoComponents = hangulSyllableToJamoComponentsText(character);
+export function isCharacterAllWrong(character: string): boolean {
+    const jamoComponents = hangulSyllableToJamoComponentsText(character);
+    
+    if (!g_secretWordJamoSets) return true;
     
     for (let i = 0; i < MAX_LETTERS; i++) {
-        if (countJamoComponentsInOtherJamoComponents(jamoComponents, g_secretWordJamoSets[i]) > 0) {
+        if (countJamoComponentsInOtherJamoComponents(jamoComponents, g_secretWordJamoSets[i] as string) > 0) {
             return false;
         }
     }
@@ -294,13 +328,17 @@ export function isCharacterAllWrong(character) {
 /**
  * 예/아니오/많음 리스트를 자모 성분으로부터 생성
  */
-export function yesNoMaybeListsFromComponents(character, index, checkUniques) {
-    let guessJamoComponents = hangulSyllableToJamoComponentsText(character);
-    let secretJamoComponents = g_secretWordJamoSets[index];
+export function yesNoMaybeListsFromComponents(character: string, index: number, _checkUniques: boolean): string {
+    const guessJamoComponents = hangulSyllableToJamoComponentsText(character);
     
-    let matchCount = countJamoComponentsInOtherJamoComponents(guessJamoComponents, secretJamoComponents);
-    let totalGuessComponents = guessJamoComponents.length;
-    let totalSecretComponents = secretJamoComponents.length;
+    if (!g_secretWordJamoSets || !g_secretWordJamoSets[index]) {
+        return EMOTE_NONE;
+    }
+    
+    const secretJamoComponents = g_secretWordJamoSets[index] as string;
+    const matchCount = countJamoComponentsInOtherJamoComponents(guessJamoComponents, secretJamoComponents);
+    // const totalGuessComponents = guessJamoComponents.length;
+    // const totalSecretComponents = secretJamoComponents.length;
     
     console.log(`🔍 힌트 계산: "${character}" (위치 ${index})`);
     console.log(`  - 정답: "${g_secretWordString}"`);
@@ -308,25 +346,30 @@ export function yesNoMaybeListsFromComponents(character, index, checkUniques) {
     console.log(`  - 정답 자모[${index}]: [${secretJamoComponents}]`);
     console.log(`  - 일치 개수: ${matchCount}`);
     
-    // 힌트 결정 로직
+    // 안전한 첫자음 비교를 위한 검증
+    const hasValidFirstConsonant = guessJamoComponents.length > 0 && 
+                                   secretJamoComponents.length > 0;
+    const firstConsonantMatch = hasValidFirstConsonant && 
+                               guessJamoComponents[0] === secretJamoComponents[0];
+    
+    // 힌트 결정 로직 (개선된 버전)
     if (character === g_secretWordString[index]) {
         console.log(`  ✅ 완전 일치 -> 🥕`);
         return EMOTE_MATCH;
-    } else if (matchCount >= 2 && guessJamoComponents[0] === secretJamoComponents[0]) {
+    } else if (matchCount >= 2 && firstConsonantMatch) {
         console.log(`  ✅ 비슷함 (2개+ 일치 + 첫자음 일치) -> 🍄`);
         return EMOTE_SIMILAR;
     } else if (matchCount >= 2) {
         console.log(`  ✅ 많음 (2개+ 일치) -> 🧄`);
         return EMOTE_MANY;
     } else if (matchCount === 1) {
-        // 현재 위치에서 1개 일치하면 무조건 가지 (존재함)
         console.log(`  ✅ 존재함 (현재 위치에서 1개 일치) -> 🍆`);
         return EMOTE_EXISTS;
-    } else if (matchCount === 0) {
+    } else { // matchCount === 0
         // 현재 위치에서 0개 일치인 경우에만 반대 위치 확인
-        let oppositeIndex = index === 0 ? 1 : 0;
+        const oppositeIndex = index === 0 ? 1 : 0;
         if (oppositeIndex < g_secretWordJamoSets.length) {
-            let oppositeMatchCount = countJamoComponentsInOtherJamoComponents(guessJamoComponents, g_secretWordJamoSets[oppositeIndex]);
+            const oppositeMatchCount = countJamoComponentsInOtherJamoComponents(guessJamoComponents, g_secretWordJamoSets[oppositeIndex] as string);
             console.log(`  - 반대 위치[${oppositeIndex}] 자모: [${g_secretWordJamoSets[oppositeIndex]}]`);
             console.log(`  - 반대 위치 일치 개수: ${oppositeMatchCount}`);
             if (oppositeMatchCount > 0) {
@@ -336,16 +379,13 @@ export function yesNoMaybeListsFromComponents(character, index, checkUniques) {
         }
         console.log(`  ✅ 없음 -> 🍎`);
         return EMOTE_NONE;
-    } else {
-        console.log(`  ✅ 없음 -> 🍎`);
-        return EMOTE_NONE;
     }
 }
 
 /**
  * 게임 보드 지우기
  */
-export function clearBoard() {
+export function clearBoard(): void {
     g_currentGuess = [];
     g_nextLetter = 0;
     g_boardState = [];
@@ -360,7 +400,7 @@ export function clearBoard() {
 /**
  * 게임 상태 리셋
  */
-export function resetGameState() {
+export function resetGameState(): void {
     clearBoard();
     g_finalVictoryGuesses = undefined;
     g_invalidWordCount = 0;
@@ -370,8 +410,8 @@ export function resetGameState() {
 /**
  * 추측 검증 및 처리
  */
-export function checkGuess(manual = false) {
-    let guessString = constructGuessString();
+export function checkGuess(manual: boolean = false): void {
+    const guessString = constructGuessString();
 
     // 모든 문자가 틀린지 확인
     let allWrong = true;
@@ -392,8 +432,8 @@ export function checkGuess(manual = false) {
         showError("🐯 옳은 단어를 입력하세요");
 
         if (manual && !g_debugging) {
-            if (g_invalidWordCount < MAX_INVALID_WORDS && window.goatcounter) {
-                window.goatcounter.count({
+            if (g_invalidWordCount < MAX_INVALID_WORDS && (window as any).goatcounter) {
+                (window as any).goatcounter.count({
                     path: guessString,
                     title: 'invalid',
                     event: true,
@@ -426,14 +466,14 @@ export function checkGuess(manual = false) {
         createSecretWordJamoSets();
     }
 
-    let secretWord = Array.from(g_secretWordString);
-    var shadeDelay = manual ? 700 : 0;
+    // const secretWord = Array.from(g_secretWordString);
+    const shadeDelay = manual ? 700 : 0;
 
-    var letterColor = [DATA_NONE[DATA_COLOR], DATA_NONE[DATA_COLOR]];
-    var letterEmote = [EMOTE_NONE, EMOTE_NONE];
+    const letterColor: string[] = [DATA_NONE[DATA_COLOR], DATA_NONE[DATA_COLOR]];
+    const letterEmote: string[] = [EMOTE_NONE, EMOTE_NONE];
 
     // 현재 추측의 자모 분해
-    let currentGuessJamoSets = Array(MAX_LETTERS);
+    const currentGuessJamoSets: string[] = Array(MAX_LETTERS);
     for (let i = 0; i < MAX_LETTERS; i++) {
         currentGuessJamoSets[i] = hangulSyllableToJamoComponentsText(g_currentGuess[i]);
     }
@@ -468,7 +508,7 @@ export function checkGuess(manual = false) {
         
         // 자모별 Yes/No 리스트 업데이트
         for (let jamoChar = 0; jamoChar < currentGuessJamoSets[i].length; jamoChar++) {
-            let letter = currentGuessJamoSets[i][jamoChar];
+            const letter = currentGuessJamoSets[i][jamoChar];
             
             // 힌트에 따른 자모 분류
             if (letterEmote[i] === EMOTE_MATCH) {
@@ -508,8 +548,8 @@ export function checkGuess(manual = false) {
     });
 
     // 승리 확인
-    let isWin = letterEmote.every(emote => emote === EMOTE_MATCH);
-    let isGameOver = g_guessesRemaining <= 0 || isWin;
+    const isWin = letterEmote.every(emote => emote === EMOTE_MATCH);
+    const isGameOver = g_guessesRemaining <= 0 || isWin;
 
     if (isGameOver) {
         endGame(isWin, manual);
@@ -531,7 +571,7 @@ export function checkGuess(manual = false) {
 /**
  * 게임 종료 처리
  */
-export function endGame(success, manual = false) {
+export function endGame(success: boolean, manual: boolean = false): void {
     console.log(`🏁 게임 종료 - ${success ? '승리' : '패배'}`);
 
     if (success) {
@@ -556,13 +596,13 @@ export function endGame(success, manual = false) {
     });
 
     // 게임 결과 표시
-    let messages = [];
+    const messages: string[][] = [];
     if (success) {
         if (g_isPracticeGame) {
             messages.push(["연습이 끝났어요!"]);
             messages.push(["이제 진짜 게임을 시작해봐요!"]);
         } else {
-            let attempts = NUMBER_OF_GUESSES - g_guessesRemaining;
+            const attempts = NUMBER_OF_GUESSES - g_guessesRemaining;
             messages.push([`${attempts}번만에 맞췄어요!`]);
             
             // 점수에 따른 메시지
@@ -587,7 +627,12 @@ export function endGame(success, manual = false) {
     // 통계 업데이트
     if (!g_isPracticeGame) {
         import('./statistics.js').then(statistics => {
-            statistics.endGameWriteStats(success ? g_finalVictoryGuesses : 0);
+            statistics.endGameWriteStats(
+                success ? (g_finalVictoryGuesses || 0) : 0,
+                g_dayNumber,
+                g_secretWordString,
+                new Date()
+            );
         });
     }
 }
@@ -595,7 +640,7 @@ export function endGame(success, manual = false) {
 /**
  * 승리 통계 증가
  */
-function increaseWinStats() {
+function increaseWinStats(): void {
     sd_successCount[0]++;
     sd_currentStreak[0]++;
     
@@ -611,7 +656,7 @@ function increaseWinStats() {
 /**
  * 문자 입력 처리
  */
-export function insertLetter(pressedKey) {
+export function insertLetter(pressedKey: string): void {
     if (g_guessesRemaining === 0) {
         return;
     }
@@ -632,7 +677,7 @@ export function insertLetter(pressedKey) {
 /**
  * 문자 삭제 처리
  */
-export function deleteLetter() {
+export function deleteLetter(): void {
     if (g_nextLetter > 0) {
         g_nextLetter -= 1;
         g_currentGuess[g_nextLetter] = "";
@@ -647,47 +692,96 @@ export function deleteLetter() {
 }
 
 /**
- * 오류 메시지 표시
+ * 오류 메시지 표시 (Toast 방식으로 개선)
  */
-function showError(errorText) {
-    let errorBubble = document.getElementById("error-message");
+function showError(errorText: string): void {
+    // DOM 기반 에러 표시 (기존 방식 유지)
+    const errorBubble = document.getElementById("error-message");
     if (errorBubble) {
         errorBubble.innerText = errorText;
-        import('./ui-helpers.js').then(uiHelpers => {
-            uiHelpers.restartAnimationViaDup(errorBubble, "fade-in-out");
-        });
+        errorBubble.classList.remove("fade-in-out"); // 기존 클래스 제거
+        errorBubble.classList.add("show"); // 표시
+        errorBubble.style.opacity = "1";
+        errorBubble.style.transform = "translateY(0)";
+        
+        // 3초 후 자동 제거
+        setTimeout(() => {
+            if (errorBubble) {
+                errorBubble.style.opacity = "0";
+                errorBubble.style.transform = "translateY(-10px)";
+                setTimeout(() => {
+                    errorBubble.classList.remove("show");
+                    errorBubble.innerText = "";
+                }, 300);
+            }
+        }, 3000);
     }
+    
+    // React Toast 시스템으로 이벤트 발송 (추후 연동용)
+    if (typeof window !== 'undefined' && (window as any).gameToastSystem) {
+        const toastSystem = (window as any).gameToastSystem;
+        
+        // 에러 타입 자동 감지
+        let errorType = 'invalid_word';
+        if (errorText.includes('2개 글자')) {
+            errorType = 'invalid_length';
+        } else if (errorText.includes('자음과 모음')) {
+            errorType = 'all_wrong';
+        }
+        
+        toastSystem.showGameError(errorType);
+    }
+    
+    // 햅틱 피드백 (모바일)
+    if (navigator.vibrate) {
+        navigator.vibrate([25]);
+    }
+    
     console.warn('⚠️ 게임 오류:', errorText);
 }
 
 
 // 전역 함수로 등록 (브라우저 환경에서만)
 if (typeof window !== 'undefined') {
-    window.checkGuess = checkGuess;
-    window.insertLetter = insertLetter;
-    window.deleteLetter = deleteLetter;
+    (window as any).checkGuess = checkGuess;
+    (window as any).insertLetter = insertLetter;
+    (window as any).deleteLetter = deleteLetter;
 }
 
 /**
  * 게임 종료 여부 확인
  */
-export function isGameOver() {
+export function isGameOver(): boolean {
     return g_guessesRemaining <= 0 || g_foundMatch.every(match => match);
 }
 
 /**
  * 승리 여부 확인
  */
-export function isGameWon() {
+export function isGameWon(): boolean {
     return g_foundMatch.every(match => match);
 }
 
 /**
  * 현재 게임 상태 가져오기
  */
-export function getGameState() {
+export function getGameState(): {
+    secretWord: string;
+    secretWordString: string;
+    currentGuess: string[];
+    guessesRemaining: number;
+    boardState: any[];
+    isGameOver: boolean;
+    isGameWon: boolean;
+    yesList: string[][];
+    noList: string[][];
+    hotComboList: any[][];
+    hintList: string[];
+    hintsUsed: boolean;
+} {
     return {
         secretWord: g_secretWordString,
+        secretWordString: g_secretWordString,
         currentGuess: g_currentGuess,
         guessesRemaining: g_guessesRemaining,
         boardState: g_boardState,
@@ -706,7 +800,7 @@ export function getGameState() {
  * @param {string} letter - 추가할 글자
  * @param {number} index - 위치 인덱스 (0 또는 1)
  */
-export function addToYesList(letter, index) {
+export function addToYesList(letter: string, index: number): void {
     if (g_yesList[index].indexOf(letter) === -1) {
         g_yesList[index].push(letter);
     }
@@ -717,7 +811,7 @@ export function addToYesList(letter, index) {
  * @param {string} letter - 추가할 글자
  * @param {number} index - 위치 인덱스 (0 또는 1)
  */
-export function addToNoList(letter, index) {
+export function addToNoList(letter: string, index: number): void {
     if (g_noList[index].indexOf(letter) === -1) {
         g_noList[index].push(letter);
     }
@@ -730,15 +824,15 @@ export function addToNoList(letter, index) {
  * @param {number} min - 최소값
  * @param {number} max - 최대값
  */
-export function addToHotComboList(combo, index, min, max) {
-    let hotComboEntry = {
+export function addToHotComboList(combo: string, index: number, min: number, max: number): void {
+    const hotComboEntry = {
         combo: combo,
         min: min,
         max: max
     };
     
     // 기존에 같은 조합이 있는지 확인
-    let existingIndex = g_hotComboList[index].findIndex(entry => entry.combo === combo);
+    const existingIndex = g_hotComboList[index].findIndex(entry => entry.combo === combo);
     if (existingIndex === -1) {
         g_hotComboList[index].push(hotComboEntry);
     } else {
@@ -752,7 +846,7 @@ export function addToHotComboList(combo, index, min, max) {
  * @param {string} letters - 추가할 글자들
  * @param {number} index - 위치 인덱스 (0 또는 1)
  */
-export function addManyToNoList(letters, index) {
+export function addManyToNoList(letters: string, index: number): void {
     for (let i = 0; i < letters.length; i++) {
         addToNoList(letters[i], index);
     }
@@ -763,7 +857,7 @@ export function addManyToNoList(letters, index) {
  * @param {string} jamoComponents - 자모 구성요소
  * @param {number} index - 위치 인덱스 (0 또는 1)
  */
-export function addAllOthersToNoList(jamoComponents, index) {
+export function addAllOthersToNoList(jamoComponents: string, index: number): void {
     // 한글 자음 목록
     const consonants = 'ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ';
     const vowels = 'ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ';
@@ -795,7 +889,7 @@ export function addAllOthersToNoList(jamoComponents, index) {
  * 받침이 없는 글자들을 no 리스트에 추가
  * @param {number} index - 위치 인덱스 (0 또는 1)
  */
-export function addNonBatchimToNoList(index) {
+export function addNonBatchimToNoList(index: number): void {
     // 받침이 없는 한글 자음들
     const nonBatchimConsonants = 'ㄲㄸㅃㅆㅉ';
     addManyToNoList(nonBatchimConsonants, index);
@@ -807,9 +901,9 @@ export function addNonBatchimToNoList(index) {
  * @param {Array} testList - 테스트할 리스트
  * @returns {boolean} 핫 콤보를 깨뜨리는지 여부
  */
-export function breaksAnyHotCombo(index, testList) {
+export function breaksAnyHotCombo(index: number, testList: string[]): boolean {
     for (let i = 0; i < g_hotComboList[index].length; i++) {
-        let hotCombo = g_hotComboList[index][i];
+        const hotCombo = g_hotComboList[index][i];
         let matchCount = 0;
         
         for (let j = 0; j < testList.length; j++) {
@@ -829,7 +923,7 @@ export function breaksAnyHotCombo(index, testList) {
 /**
  * 게임 보드 초기화
  */
-export function initBoard() {
+export function initBoard(): void {
     g_guessesRemaining = NUMBER_OF_GUESSES;
     g_currentGuess = [];
     g_nextLetter = 0;
@@ -849,11 +943,13 @@ export function initBoard() {
 /**
  * 스토리 버튼 업데이트
  */
-export function updateStoryButton() {
-    import('./story.js').then(story => {
-        story.updateStoryButtonState();
-    });
+export function updateStoryButton(): void {
+    // TODO: Import story module when available
+    // import('./story.js').then(story => {
+    //     story.updateStoryButtonState();
+    // });
+    console.log('Story button update skipped - module not available');
 }
 
-// word.js 함수들을 re-export
-export { ALL_WORDS, getSecretWordByDayIndex, numSecretWords, fullDictionaryIncludes } from './word.js';
+// word.ts 함수들을 re-export
+export { getSecretWordByDayIndex, numSecretWords, fullDictionaryIncludes } from './word';

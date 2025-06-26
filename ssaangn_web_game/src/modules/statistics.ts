@@ -3,7 +3,7 @@
  * 게임 통계, 점수 기록, 주간 상태, 메달 시스템을 담당합니다.
  */
 
-import * as helper from './helper_tools.js';
+import * as helper from './helper_tools';
 import { 
     NUMBER_OF_GUESSES,
     WEEKLY_STATUS_ELEMENTS,
@@ -15,9 +15,7 @@ import {
     EMOTE_MEDAL_GOLD,
     EMOTE_MEDAL_SILVER,
     EMOTE_MEDAL_COPPER
-} from './constants.js';
-// 전역 변수들
-export let g_refreshUTCDate = new Date();
+} from './constants';
 
 import {
     sd_weeklyStatus,
@@ -32,31 +30,52 @@ import {
     sd_currentStreak,
     sd_bestStreak,
     sd_raceSuccessCount
-} from './storage.js';
+} from './storage';
+
+// 전역 변수들
+export let g_refreshUTCDate = new Date();
 
 // 글로벌 통계 상태
 export let g_globalStatsStatus = 0;
 export let g_timeForGlobalStats = false;
 
+// 타입 정의
+interface StatsData {
+    totalPlayers?: number;
+    todaySuccessRate?: number;
+    averageAttempts?: number;
+    hardestWord?: string;
+}
+
+interface CurrentStats {
+    successCount: number;
+    currentStreak: number;
+    bestStreak: number;
+    raceSuccessCount: number;
+    goldMedals: number;
+    silverMedals: number;
+    copperMedals: number;
+}
+
 /**
  * 날짜를 로컬 ISO 문자열로 변환
  */
-export function getRefreshDateLocalISOString() {
-    let localYear = g_refreshUTCDate.getFullYear();
-    let localMonth = g_refreshUTCDate.getMonth() + 1;
-    let localDate = g_refreshUTCDate.getDate();
+export function getRefreshDateLocalISOString(): string {
+    const localYear = g_refreshUTCDate.getFullYear();
+    const localMonth = g_refreshUTCDate.getMonth() + 1;
+    const localDate = g_refreshUTCDate.getDate();
     return localYear + "-" + (localMonth < 10 ? "0" : "") + localMonth + "-" + (localDate < 10 ? "0" : "") + localDate;
 }
 
 /**
  * 게임 종료 통계 기록
  */
-export function endGameWriteStats(score, dayNumber, secretWord, refreshUTCDate) {
+export function endGameWriteStats(score: number, dayNumber: number, secretWord: string, _refreshUTCDate: Date): void {
     if (location.href.startsWith("http://127.0.0.1")) {
         return;
     }
 
-    let dateString = getRefreshDateLocalISOString();
+    const dateString = getRefreshDateLocalISOString();
 
     const xhr = new XMLHttpRequest();
     xhr.open("GET", `end_game.php?date=${encodeURIComponent(dateString)}&day_number=${dayNumber}&secret_word=${encodeURIComponent(secretWord)}&score=${score}`, true);
@@ -66,7 +85,7 @@ export function endGameWriteStats(score, dayNumber, secretWord, refreshUTCDate) 
 /**
  * 레이스 게임 종료 통계 기록
  */
-export function endGameRaceWriteStats(score, raceHour, dayNumber) {
+export function endGameRaceWriteStats(score: number, raceHour: number, dayNumber: number): void {
     sd_previousRaceHour[0] = raceHour;
     sd_previousRaceScore[0] = score;
     helper.setStoredDataValue(sd_previousRaceHour);
@@ -76,7 +95,7 @@ export function endGameRaceWriteStats(score, raceHour, dayNumber) {
         return;
     }
 
-    let dateString = getRefreshDateLocalISOString();
+    const dateString = getRefreshDateLocalISOString();
 
     const xhr = new XMLHttpRequest();
     xhr.open("GET", `end_game_race.php?date=${encodeURIComponent(dateString)}&day_number=${dayNumber}&hour_number=${raceHour}&score=${score}`, true);
@@ -86,30 +105,30 @@ export function endGameRaceWriteStats(score, raceHour, dayNumber) {
 /**
  * 글로벌 통계 가져오기
  */
-export function getGlobalStats() {
+export function getGlobalStats(): void {
     getGlobalStats_async().then(() => displayGlobalStats());
 }
 
 /**
  * 글로벌 레이스 통계 가져오기
  */
-export function getGlobalRaceStats() {
+export function getGlobalRaceStats(): void {
     getGlobalRaceStats_async().then(() => displayGlobalStats());
 }
 
 /**
  * 글로벌 통계 토글
  */
-export function toggleGlobalStats() {
-    let globalStats = document.getElementById("global-stats");
+export function toggleGlobalStats(): void {
+    const globalStats = document.getElementById("global-stats");
     if (!globalStats) return;
 
     if (globalStats.style.display === "flex") {
         hideGlobalStats();
     } else {
         // 쿨다운 확인
-        let currentTime = Date.now();
-        let lastRequestTime = sd_globalStatsRequestTime[0];
+        const currentTime = Date.now();
+        const lastRequestTime = sd_globalStatsRequestTime[0];
         
         if (currentTime - lastRequestTime < GLOBAL_STATS_REFRESH_COOLDOWN * 1000) {
             // 쿨다운 중이면 저장된 데이터 표시
@@ -123,8 +142,8 @@ export function toggleGlobalStats() {
 /**
  * 글로벌 통계 숨기기
  */
-export function hideGlobalStats() {
-    let globalStats = document.getElementById("global-stats");
+export function hideGlobalStats(): void {
+    const globalStats = document.getElementById("global-stats");
     if (globalStats) {
         globalStats.style.display = "none";
     }
@@ -134,14 +153,14 @@ export function hideGlobalStats() {
 /**
  * 글로벌 통계 표시
  */
-export function displayGlobalStats() {
-    let globalStats = document.getElementById("global-stats");
+export function displayGlobalStats(): void {
+    const globalStats = document.getElementById("global-stats");
     if (!globalStats) return;
 
     try {
-        let statsData = JSON.parse(sd_globalStats[0] || '{}');
+        const statsData: StatsData = JSON.parse(sd_globalStats[0] || '{}');
         
-        let content = `
+        const content = `
             <div class="stats-header">
                 <h3>🌍 글로벌 통계</h3>
                 <button onclick="hideGlobalStats()" class="close-btn">✕</button>
@@ -170,7 +189,7 @@ export function displayGlobalStats() {
 /**
  * 통계 HTML 생성
  */
-function generateStatsHTML(statsData) {
+function generateStatsHTML(statsData: StatsData): string {
     if (!statsData || Object.keys(statsData).length === 0) {
         return '<p>통계 데이터가 없습니다.</p>';
     }
@@ -200,12 +219,12 @@ function generateStatsHTML(statsData) {
 /**
  * 비동기 글로벌 통계 가져오기
  */
-export async function getGlobalStats_async() {
+export async function getGlobalStats_async(): Promise<void> {
     g_globalStatsStatus = 1;
     
     try {
-        let dateString = getRefreshDateLocalISOString();
-        let dayNumber = helper.getLocalDayNumberStartingWithYMD(new Date(), 2023, 11, 24);
+        const dateString = getRefreshDateLocalISOString();
+        const dayNumber = helper.getLocalDayNumberStartingWithYMD(new Date(), 2023, 11, 24);
         
         const response = await fetch(`get_global_stats.php?date=${encodeURIComponent(dateString)}&day_number=${dayNumber}`);
         const data = await response.text();
@@ -226,13 +245,13 @@ export async function getGlobalStats_async() {
 /**
  * 비동기 글로벌 레이스 통계 가져오기
  */
-export async function getGlobalRaceStats_async() {
+export async function getGlobalRaceStats_async(): Promise<void> {
     g_globalStatsStatus = 1;
     
     try {
-        let dateString = getRefreshDateLocalISOString();
-        let dayNumber = helper.getLocalDayNumberStartingWithYMD(new Date(), 2023, 11, 24);
-        let raceHour = new Date().getHours();
+        const dateString = getRefreshDateLocalISOString();
+        const dayNumber = helper.getLocalDayNumberStartingWithYMD(new Date(), 2023, 11, 24);
+        const raceHour = new Date().getHours();
         
         const response = await fetch(`get_global_race_stats.php?date=${encodeURIComponent(dateString)}&day_number=${dayNumber}&hour_number=${raceHour}`);
         const data = await response.text();
@@ -253,7 +272,7 @@ export async function getGlobalRaceStats_async() {
 /**
  * 승리 통계 증가
  */
-export function increaseWinStats() {
+export function increaseWinStats(): void {
     sd_successCount[0]++;
     sd_currentStreak[0]++;
     
@@ -269,17 +288,17 @@ export function increaseWinStats() {
 /**
  * 주간 상태 업데이트
  */
-export function updateWeeklyStatus(dayNumber, guessesRemaining, secretWord, refreshUTCDate) {
+export function updateWeeklyStatus(dayNumber: number, guessesRemaining: number, secretWord: string, refreshUTCDate: Date): void {
     if (!canEarnMedals()) {
         return;
     }
 
-    let currentDayOfWeek = getWeeklyStatusDayOfTheWeek(refreshUTCDate);
-    let weeklyStatus = getWeeklyStatus();
-    let index = currentDayOfWeek * WEEKLY_STATUS_ELEMENTS;
+    const currentDayOfWeek = getWeeklyStatusDayOfTheWeek(refreshUTCDate);
+    const weeklyStatus = getWeeklyStatus();
+    const index = currentDayOfWeek * WEEKLY_STATUS_ELEMENTS;
     
-    weeklyStatus[index] = dayNumber;
-    weeklyStatus[index + 1] = NUMBER_OF_GUESSES - (guessesRemaining - 1);
+    weeklyStatus[index] = dayNumber.toString();
+    weeklyStatus[index + 1] = (NUMBER_OF_GUESSES - (guessesRemaining - 1)).toString();
     weeklyStatus[index + 2] = secretWord;
 
     sd_weeklyStatus[0] = "";
@@ -296,7 +315,7 @@ export function updateWeeklyStatus(dayNumber, guessesRemaining, secretWord, refr
 /**
  * 주간 상태의 요일 가져오기
  */
-export function getWeeklyStatusDayOfTheWeek(refreshUTCDate) {
+export function getWeeklyStatusDayOfTheWeek(refreshUTCDate: Date): number {
     let currentDayOfWeek = refreshUTCDate.getDay() - 1;
     if (currentDayOfWeek < 0) {
         currentDayOfWeek = 6;
@@ -307,9 +326,9 @@ export function getWeeklyStatusDayOfTheWeek(refreshUTCDate) {
 /**
  * 주간 상태 가져오기
  */
-export function getWeeklyStatus() {
+export function getWeeklyStatus(): string[] {
     let weeklyStatus = sd_weeklyStatus[0].split(",");
-    if (sd_weeklyStatus[0] == "" || weeklyStatus.length != WEEKDAY_NAMES.length * WEEKLY_STATUS_ELEMENTS) {
+    if (sd_weeklyStatus[0] === "" || weeklyStatus.length !== WEEKDAY_NAMES.length * WEEKLY_STATUS_ELEMENTS) {
         sd_weeklyStatus[0] = WEEKLY_STATUS_EMPTY;
         helper.setStoredDataValue(sd_weeklyStatus);
         weeklyStatus = sd_weeklyStatus[0].split(",");
@@ -320,24 +339,27 @@ export function getWeeklyStatus() {
 /**
  * 주간 상태가 준비되면 표시
  */
-export function displayWeeklyStatusIfReady() {
+export function displayWeeklyStatusIfReady(): void {
     if (!canEarnMedals()) {
         return;
     }
 
-    let weeklyStatus = getWeeklyStatus();
+    const weeklyStatus = getWeeklyStatus();
     let weeklyText = "쌍근 일주일 실적  \n";
 
     let bestDay = -1;
     let bestDayScore = 5;
     let expectedFinalDay = 0;
     
+    // These variables are used in the loop below
+    console.log('Initial values:', { bestDay, expectedFinalDay });
+    
     for (let i = 0; i < WEEKDAY_NAMES.length; i++) {
-        let index = i * WEEKLY_STATUS_ELEMENTS;
-        if (weeklyStatus[index] != 0) {
+        const index = i * WEEKLY_STATUS_ELEMENTS;
+        if (weeklyStatus[index] !== "0") {
             weeklyText += WEEKDAY_NAMES[i] + " ";
-            expectedFinalDay = Math.floor(weeklyStatus[index]) + (WEEKDAY_NAMES.length - 1 - i);
-            let score = weeklyStatus[index + 1];
+            expectedFinalDay = Math.floor(parseInt(weeklyStatus[index])) + (WEEKDAY_NAMES.length - 1 - i);
+            const score = parseInt(weeklyStatus[index + 1]);
             
             if (score <= bestDayScore) {
                 bestDay = i;
@@ -355,7 +377,7 @@ export function displayWeeklyStatusIfReady() {
 /**
  * 점수에 따른 메달 증가
  */
-export function increaseMedalForScore(score) {
+export function increaseMedalForScore(score: number): void {
     if (!canEarnMedals()) {
         return;
     }
@@ -375,21 +397,21 @@ export function increaseMedalForScore(score) {
 /**
  * 메달 획득 가능 여부 확인
  */
-export function canEarnMedals() {
+export function canEarnMedals(): boolean {
     return !location.href.startsWith("http://127.0.0.1");
 }
 
 /**
  * 차단 다이얼로그 표시 여부 확인
  */
-export function isBlockingDialogShowing() {
-    let weeklyEnd = document.getElementById("weekly-review");
-    if (weeklyEnd && weeklyEnd.style.display == "flex") {
+export function isBlockingDialogShowing(): boolean {
+    const weeklyEnd = document.getElementById("weekly-review");
+    if (weeklyEnd && weeklyEnd.style.display === "flex") {
         return true;
     }
 
-    let globalStats = document.getElementById("global-stats");
-    if (globalStats && globalStats.style.display == "flex") {
+    const globalStats = document.getElementById("global-stats");
+    if (globalStats && globalStats.style.display === "flex") {
         return true;
     }
 
@@ -399,7 +421,7 @@ export function isBlockingDialogShowing() {
 /**
  * 현재 통계 상태 가져오기
  */
-export function getCurrentStats() {
+export function getCurrentStats(): CurrentStats {
     return {
         successCount: sd_successCount[0],
         currentStreak: sd_currentStreak[0],
@@ -414,7 +436,7 @@ export function getCurrentStats() {
 /**
  * 메달 통계 HTML 생성
  */
-export function generateMedalStatsHTML() {
+export function generateMedalStatsHTML(): string {
     return `
         <div class="medal-stats">
             <div class="medal-item">
@@ -433,6 +455,8 @@ export function generateMedalStatsHTML() {
     `;
 }
 
-// 전역 함수로 등록
-window.hideGlobalStats = hideGlobalStats;
-window.toggleGlobalStats = toggleGlobalStats;
+// 전역 함수로 등록 (브라우저 환경에서만)
+if (typeof window !== 'undefined') {
+    (window as any).hideGlobalStats = hideGlobalStats;
+    (window as any).toggleGlobalStats = toggleGlobalStats;
+}

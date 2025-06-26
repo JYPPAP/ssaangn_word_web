@@ -60,6 +60,18 @@ export interface KeyboardModule {
   deleteLetter: () => boolean;
 }
 
+// 힌트 데이터 배열 타입
+type HintDataArray = [
+  string, // EMOTE
+  string, // NAME
+  string, // SHORT
+  string, // COLOR
+  string, // LIMAGE
+  string, // IMAGE
+  string, // REVEAL
+  string  // DESCRIPTION
+];
+
 // 상수 모듈
 export interface ConstantsModule {
   MAX_LETTERS: number;
@@ -70,13 +82,20 @@ export interface ConstantsModule {
   EMOTE_EXISTS: string;
   EMOTE_OPPOSITE: string;
   EMOTE_NONE: string;
-  DATA_MATCH: string;
-  DATA_SIMILAR: string;
-  DATA_MANY: string;
-  DATA_EXISTS: string;
-  DATA_OPPOSITE: string;
-  DATA_NONE: string;
-  DATA_COLOR: string;
+  DATA_MATCH: HintDataArray;
+  DATA_SIMILAR: HintDataArray;
+  DATA_MANY: HintDataArray;
+  DATA_EXISTS: HintDataArray;
+  DATA_OPPOSITE: HintDataArray;
+  DATA_NONE: HintDataArray;
+  DATA_COLOR: 3; // 배열 인덱스로 타입 지정
+  DATA_EMOTE: 0;
+  DATA_NAME: 1;
+  DATA_SHORT: 2;
+  DATA_LIMAGE: 4;
+  DATA_IMAGE: 5;
+  DATA_REVEAL: 6;
+  DATA_DESCRIPTION: 7;
 }
 
 // 저장소 모듈

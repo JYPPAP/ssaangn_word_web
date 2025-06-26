@@ -12,7 +12,8 @@ import {
   StorageService,
   isModulesReady
 } from '../services/GameModules';
-import type { GameState, HintResult } from '../services/GameModules';
+import { useGlobalToast } from './useToast';
+import type { GameState, HintResult } from '../types/modules.ts';
 
 export interface ModuleGameState {
   // 게임 상태
@@ -59,6 +60,9 @@ export interface ModuleGameState {
 }
 
 export const useModuleGame = (): ModuleGameState => {
+  // Toast 훅
+  const toast = useGlobalToast();
+  
   const [isInitialized, setIsInitialized] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -261,13 +265,13 @@ export const useModuleGame = (): ModuleGameState => {
       // 입력 완성 검증
       const currentGuessString = GameCoreService.getCurrentGuess();
       if (currentGuessString.length !== 2) {
-        setError('2글자를 모두 입력해주세요');
+        toast.showGameError('invalid_length');
         return;
       }
 
       // 단어 유효성 검증
       if (!GameCoreService.isValidWord(currentGuessString)) {
-        setError('올바른 단어를 입력해주세요');
+        toast.showGameError('invalid_word');
         return;
       }
 
@@ -275,7 +279,7 @@ export const useModuleGame = (): ModuleGameState => {
       const result = GameCoreService.submitGuess();
       
       if (!result.success) {
-        setError('단어를 제출할 수 없습니다');
+        toast.showErrorWithFeedback('단어를 제출할 수 없습니다');
         return;
       }
 
@@ -310,6 +314,8 @@ export const useModuleGame = (): ModuleGameState => {
         const newStats = StatisticsService.getStatistics();
         setStatistics(newStats);
         
+        // 승리 토스트 표시
+        toast.showGameSuccess(newAttempts);
         console.log('🎉 게임 승리!');
         
       } else if (result.isGameOver || newAttempts >= maxAttempts) {
@@ -320,6 +326,8 @@ export const useModuleGame = (): ModuleGameState => {
         const newStats = StatisticsService.getStatistics();
         setStatistics(newStats);
         
+        // 패배 토스트 표시
+        toast.showGameOver(targetWord);
         console.log('😔 게임 패배');
         
       } else {
