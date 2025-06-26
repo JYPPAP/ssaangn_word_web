@@ -254,7 +254,7 @@ const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({
       opacity: 1, 
       x: 0,
       transition: { 
-        type: "spring", 
+        type: "spring" as const, 
         stiffness: 100 
       }
     }
@@ -265,7 +265,7 @@ const VirtualKeyboard: React.FC<VirtualKeyboardProps> = ({
     visible: { 
       opacity: 1, 
       scale: 1,
-      transition: { type: "spring", stiffness: 200 }
+      transition: { type: "spring" as const, stiffness: 200 }
     },
     pressed: {
       scale: 0.95,
